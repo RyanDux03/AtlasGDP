@@ -1,0 +1,103 @@
+country_name,country_code,year,value,indicator
+Germany,DE,1990,4421.75298411525,energy_use_pc
+Germany,DE,1991,4303.21110441046,energy_use_pc
+Germany,DE,1992,4191.07717344268,energy_use_pc
+Germany,DE,1993,4123.06429325007,energy_use_pc
+Germany,DE,1994,4089.20711052609,energy_use_pc
+Germany,DE,1995,4119.89234314538,energy_use_pc
+Germany,DE,1996,4247.28041587343,energy_use_pc
+Germany,DE,1997,4203.57228180046,energy_use_pc
+Germany,DE,1998,4177.53862595182,energy_use_pc
+Germany,DE,1999,4080.1161545149,energy_use_pc
+Germany,DE,2000,4094.27901518469,energy_use_pc
+Germany,DE,2001,4210.00080103251,energy_use_pc
+Germany,DE,2002,4108.61729515583,energy_use_pc
+Germany,DE,2003,4096.47794323132,energy_use_pc
+Germany,DE,2004,4131.61083697,energy_use_pc
+Germany,DE,2005,4109.8805864045,energy_use_pc
+Germany,DE,2006,4235.93876578004,energy_use_pc
+Germany,DE,2007,4023.73935857078,energy_use_pc
+Germany,DE,2008,4081.87998694017,energy_use_pc
+Germany,DE,2009,3821.62500577239,energy_use_pc
+Germany,DE,2010,4029.83085754355,energy_use_pc
+Germany,DE,2011,3891.87175356307,energy_use_pc
+Germany,DE,2012,3913.43920397127,energy_use_pc
+Germany,DE,2013,3986.18505186393,energy_use_pc
+Germany,DE,2014,3794.44720253102,energy_use_pc
+Germany,DE,2015,3780.85027551891,energy_use_pc
+Germany,DE,2016,3765.21799936242,energy_use_pc
+Germany,DE,2017,3763.19404182465,energy_use_pc
+Germany,DE,2018,3659.22924485198,energy_use_pc
+Germany,DE,2019,3570.88159282488,energy_use_pc
+Germany,DE,2020,3349.19931383762,energy_use_pc
+Germany,DE,2021,3467.03057027911,energy_use_pc
+Germany,DE,2022,3237.71606625231,energy_use_pc
+Germany,DE,2023,2906.74515947253,energy_use_pc
+India,IN,1990,323.595830731166,energy_use_pc
+India,IN,1991,331.222087309417,energy_use_pc
+India,IN,1992,336.206818642044,energy_use_pc
+India,IN,1993,339.038033254784,energy_use_pc
+India,IN,1994,347.806182247067,energy_use_pc
+India,IN,1995,361.640673294246,energy_use_pc
+India,IN,1996,367.704650910734,energy_use_pc
+India,IN,1997,376.185592059812,energy_use_pc
+India,IN,1998,378.300390670302,energy_use_pc
+India,IN,1999,392.976731815711,energy_use_pc
+India,IN,2000,394.916803104241,energy_use_pc
+India,IN,2001,393.38088619861,energy_use_pc
+India,IN,2002,397.344252941148,energy_use_pc
+India,IN,2003,399.699897139001,energy_use_pc
+India,IN,2004,415.47995649887,energy_use_pc
+India,IN,2005,425.369642526643,energy_use_pc
+India,IN,2006,441.785886693878,energy_use_pc
+India,IN,2007,461.201738250187,energy_use_pc
+India,IN,2008,481.553027437162,energy_use_pc
+India,IN,2009,509.446000134302,energy_use_pc
+India,IN,2010,531.86706609011,energy_use_pc
+India,IN,2011,546.675890208969,energy_use_pc
+India,IN,2012,572.133085479526,energy_use_pc
+India,IN,2013,577.254621645988,energy_use_pc
+India,IN,2014,610.165371779455,energy_use_pc
+India,IN,2015,622.339883988149,energy_use_pc
+India,IN,2016,627.273531026365,energy_use_pc
+India,IN,2017,648.014718317903,energy_use_pc
+India,IN,2018,668.303370218852,energy_use_pc
+India,IN,2019,666.977347524506,energy_use_pc
+India,IN,2020,632.239828540427,energy_use_pc
+India,IN,2021,676.814293488143,energy_use_pc
+India,IN,2022,727.902200094024,energy_use_pc
+India,IN,2023,754.179577921116,energy_use_pc
+United States,US,1990,7669.4512686363,energy_use_pc
+United States,US,1991,7629.84715395512,energy_use_pc
+United States,US,1992,7675.63655553518,energy_use_pc
+United States,US,1993,7708.10161116809,energy_use_pc
+United States,US,1994,7755.08252133275,energy_use_pc
+United States,US,1995,7760.89035266192,energy_use_pc
+United States,US,1996,7841.59288605808,energy_use_pc
+United States,US,1997,7825.23663798017,energy_use_pc
+United States,US,1998,7800.439490719,energy_use_pc
+United States,US,1999,7920.05392329598,energy_use_pc
+United States,US,2000,8055.14548852416,energy_use_pc
+United States,US,2001,7824.24393877407,energy_use_pc
+United States,US,2002,7840.46095949898,energy_use_pc
+United States,US,2003,7791.30391526846,energy_use_pc
+United States,US,2004,7878.53717143427,energy_use_pc
+United States,US,2005,7843.3910574627,energy_use_pc
+United States,US,2006,7694.40657948116,energy_use_pc
+United States,US,2007,7756.0141894981,energy_use_pc
+United States,US,2008,7484.83268900712,energy_use_pc
+United States,US,2009,7053.35846690965,energy_use_pc
+United States,US,2010,7162.55933024159,energy_use_pc
+United States,US,2011,7009.64607964907,energy_use_pc
+United States,US,2012,6820.46062064875,energy_use_pc
+United States,US,2013,6888.38143742637,energy_use_pc
+United States,US,2014,6915.64165280321,energy_use_pc
+United States,US,2015,6789.64733291075,energy_use_pc
+United States,US,2016,6663.4963294418,energy_use_pc
+United States,US,2017,6590.83509745633,energy_use_pc
+United States,US,2018,6738.27272433986,energy_use_pc
+United States,US,2019,6700.93033990565,energy_use_pc
+United States,US,2020,6141.53125755889,energy_use_pc
+United States,US,2021,6445.83409243358,energy_use_pc
+United States,US,2022,6511.68841394546,energy_use_pc
+United States,US,2023,6363.50015820072,energy_use_pc
