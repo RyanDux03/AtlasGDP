@@ -1,0 +1,53 @@
+import requests
+import pandas as pd
+from io import StringIO
+
+# --- Config
+countries = {"Germany":"DE","India":"IN","United States":"US"}
+# World Bank indicator codes
+indicators = {
+    "political_stability": "PV.EST",         # WGI political stability estimate
+    "energy_use_pc": "EG.USE.PCAP.KG.OE"     # Energy use per capita (kg oil equiv)
+}
+years = "1996:2023"  # adjust range if you want
+
+def fetch_wb_indicator(country_code, indicator):
+    url = f"http://api.worldbank.org/v2/country/{country_code}/indicator/{indicator}?date={years}&per_page=1000&format=json"
+    resp = requests.get(url, timeout=30)
+    resp.raise_for_status()
+    j = resp.json()
+    if len(j) < 2:
+        return pd.DataFrame()   # no data
+    data = pd.json_normalize(j[1])
+    df = data[['country.value','country.id','date','value']].rename(columns={
+        'country.value':'country_name','country.id':'country_code','date':'year','value':'value'
+    })
+    return df
+
+# Fetch for all countries for each indicator
+all_dfs = {}
+for name, code in indicators.items():
+    rows = []
+    for cname, ccode in countries.items():
+        df = fetch_wb_indicator(ccode, code)
+        if not df.empty:
+            df['indicator'] = name
+            rows.append(df)
+    if rows:
+        all_df = pd.concat(rows, ignore_index=True)
+        # sort & clean
+        all_df = all_df.dropna(subset=['value']).sort_values(['country_code','year'])
+        all_df.to_csv(f"{name}_DE_IN_US.csv", index=False)
+        all_dfs[name] = all_df
+        print(f"Saved: {name}_DE_IN_US.csv  rows: {len(all_df)}")
+    else:
+        print(f"No data for indicator {name}")
+
+# Optionally merge political stability & energy into one file keyed by country+year
+if 'political_stability' in all_dfs and 'energy_use_pc' in all_dfs:
+    ps = all_dfs['political_stability'][['country_code','country_name','year','value']].rename(columns={'value':'political_stability'})
+    eu = all_dfs['energy_use_pc'][['country_code','year','value']].rename(columns={'value':'energy_use_pc'})
+    merged = pd.merge(ps, eu, on=['country_code','year'], how='outer')
+    merged = merged.sort_values(['country_code','year'])
+    merged.to_csv("Germany_India_US_political_energy.csv", index=False)
+    print("Saved merged file: Germany_India_US_political_energy.csv")
