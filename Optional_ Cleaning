@@ -1,0 +1,7 @@
+# If you want to clean missing values or standardize columns, you can run the following code (Please let me know if you are updating the code. Thank you:
+
+import pandas as pd
+df = pd.read_csv("Germany_India_US_political_energy.csv")
+df.dropna(inplace=True)
+df.to_csv("Germany_India_US_political_energy_clean.csv", index=False)
+print("Saved cleaned version: Germany_India_US_political_energy_clean.csv")
