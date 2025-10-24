@@ -1,0 +1,3 @@
+df = pd.read_csv("Germany_India_US_political_energy.csv")
+df.info()
+df.head()
