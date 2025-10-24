@@ -1,0 +1,3 @@
+df_clean['source_ps'] = 'World Bank WGI (PV.EST)'
+df_clean['source_energy'] = 'World Bank (EG.USE.PCAP.KG.OE)'
+df_clean['retrieved_on'] = '2025-10-19'  # Optional> we can updated to the current date if needed.Thank you
