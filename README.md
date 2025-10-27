@@ -19,7 +19,7 @@ A key research aim is to verify existing literature suggesting that model perfor
 - environmental factors
 - population
 
-Data extraction focuses on **nine countries**
+Data extraction focuses on **nine countries**:
 — India
 - Germany
 - Venezuela
