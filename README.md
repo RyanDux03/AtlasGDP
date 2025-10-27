@@ -20,7 +20,7 @@ A key research aim is to verify existing literature suggesting that model perfor
 - population
 
 Data extraction focuses on **nine countries**:
-— India
+- India
 - Germany
 - Venezuela
 - Russia
