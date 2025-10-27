@@ -1,0 +1,251 @@
+country_name,country_code,year,value,indicator
+Germany,DE,1996,1.28849947452545,political_stability
+Germany,DE,1998,1.24214780330658,political_stability
+Germany,DE,2000,1.41133570671082,political_stability
+Germany,DE,2002,1.09601747989655,political_stability
+Germany,DE,2003,0.577859222888947,political_stability
+Germany,DE,2004,0.638884365558624,political_stability
+Germany,DE,2005,0.888915359973907,political_stability
+Germany,DE,2006,1.02506959438324,political_stability
+Germany,DE,2007,0.995823800563812,political_stability
+Germany,DE,2008,0.943830788135529,political_stability
+Germany,DE,2009,0.859902501106262,political_stability
+Germany,DE,2010,0.796834468841553,political_stability
+Germany,DE,2011,0.842218458652496,political_stability
+Germany,DE,2012,0.775621294975281,political_stability
+Germany,DE,2013,0.92798388004303,political_stability
+Germany,DE,2014,0.925186455249786,political_stability
+Germany,DE,2015,0.687514960765839,political_stability
+Germany,DE,2016,0.667541146278381,political_stability
+Germany,DE,2017,0.574381291866302,political_stability
+Germany,DE,2018,0.577865242958069,political_stability
+Germany,DE,2019,0.548539876937866,political_stability
+Germany,DE,2020,0.645049154758453,political_stability
+Germany,DE,2021,0.725788176059723,political_stability
+Germany,DE,2022,0.628491878509521,political_stability
+Germany,DE,2023,0.586989283561707,political_stability
+India,IN,1996,-0.972584128379822,political_stability
+India,IN,1998,-1.20082128047943,political_stability
+India,IN,2000,-1.00120759010315,political_stability
+India,IN,2002,-1.21066498756409,political_stability
+India,IN,2003,-1.50999701023102,political_stability
+India,IN,2004,-1.28043293952942,political_stability
+India,IN,2005,-1.01388049125671,political_stability
+India,IN,2006,-1.06518423557281,political_stability
+India,IN,2007,-1.15429580211639,political_stability
+India,IN,2008,-1.10970735549927,political_stability
+India,IN,2009,-1.35554790496826,political_stability
+India,IN,2010,-1.27798449993134,political_stability
+India,IN,2011,-1.32679533958435,political_stability
+India,IN,2012,-1.28930985927582,political_stability
+India,IN,2013,-1.22917413711548,political_stability
+India,IN,2014,-0.997911989688873,political_stability
+India,IN,2015,-0.954773545265198,political_stability
+India,IN,2016,-0.960426509380341,political_stability
+India,IN,2017,-0.774099111557007,political_stability
+India,IN,2018,-0.997706770896912,political_stability
+India,IN,2019,-0.796846985816956,political_stability
+India,IN,2020,-0.841419219970703,political_stability
+India,IN,2021,-0.691076755523682,political_stability
+India,IN,2022,-0.615027368068695,political_stability
+India,IN,2023,-0.635076940059662,political_stability
+Jamaica,JM,1996,0.110229268670082,political_stability
+Jamaica,JM,1998,0.083308145403862,political_stability
+Jamaica,JM,2000,0.186396479606628,political_stability
+Jamaica,JM,2002,-0.208229526877403,political_stability
+Jamaica,JM,2003,-0.384524792432785,political_stability
+Jamaica,JM,2004,-0.34566855430603,political_stability
+Jamaica,JM,2005,-0.298737347126007,political_stability
+Jamaica,JM,2006,-0.320163667201996,political_stability
+Jamaica,JM,2007,-0.256037086248398,political_stability
+Jamaica,JM,2008,-0.307299733161926,political_stability
+Jamaica,JM,2009,-0.363817691802979,political_stability
+Jamaica,JM,2010,-0.4295414686203,political_stability
+Jamaica,JM,2011,-0.0629833340644836,political_stability
+Jamaica,JM,2012,0.12050811201334,political_stability
+Jamaica,JM,2013,0.182374373078346,political_stability
+Jamaica,JM,2014,0.0244925320148468,political_stability
+Jamaica,JM,2015,0.0859657227993011,political_stability
+Jamaica,JM,2016,0.295468419790268,political_stability
+Jamaica,JM,2017,0.298303365707397,political_stability
+Jamaica,JM,2018,0.423993796110153,political_stability
+Jamaica,JM,2019,0.388309866189957,political_stability
+Jamaica,JM,2020,0.258682191371918,political_stability
+Jamaica,JM,2021,0.217994332313538,political_stability
+Jamaica,JM,2022,0.364242792129517,political_stability
+Jamaica,JM,2023,0.384837329387665,political_stability
+Japan,JP,1996,1.16188979148865,political_stability
+Japan,JP,1998,1.24767482280731,political_stability
+Japan,JP,2000,1.19755268096924,political_stability
+Japan,JP,2002,1.17602252960205,political_stability
+Japan,JP,2003,1.0271201133728,political_stability
+Japan,JP,2004,1.02831530570984,political_stability
+Japan,JP,2005,1.03576946258545,political_stability
+Japan,JP,2006,1.13833451271057,political_stability
+Japan,JP,2007,1.01037454605103,political_stability
+Japan,JP,2008,0.894625246524811,political_stability
+Japan,JP,2009,0.976251900196075,political_stability
+Japan,JP,2010,0.879353165626526,political_stability
+Japan,JP,2011,0.99509197473526,political_stability
+Japan,JP,2012,0.948442876338959,political_stability
+Japan,JP,2013,1.01914191246033,political_stability
+Japan,JP,2014,0.96859735250473,political_stability
+Japan,JP,2015,1.05422055721283,political_stability
+Japan,JP,2016,0.968189001083374,political_stability
+Japan,JP,2017,1.10012805461884,political_stability
+Japan,JP,2018,1.03756272792816,political_stability
+Japan,JP,2019,1.01981234550476,political_stability
+Japan,JP,2020,1.02614521980286,political_stability
+Japan,JP,2021,1.0155017375946,political_stability
+Japan,JP,2022,1.0326372385025,political_stability
+Japan,JP,2023,0.951136231422424,political_stability
+Russian Federation,RU,1996,-1.17785394191742,political_stability
+Russian Federation,RU,1998,-1.08974099159241,political_stability
+Russian Federation,RU,2000,-1.39924204349518,political_stability
+Russian Federation,RU,2002,-0.724512279033661,political_stability
+Russian Federation,RU,2003,-1.19315183162689,political_stability
+Russian Federation,RU,2004,-1.51459443569183,political_stability
+Russian Federation,RU,2005,-1.2677013874054,political_stability
+Russian Federation,RU,2006,-0.908794343471527,political_stability
+Russian Federation,RU,2007,-0.863382518291473,political_stability
+Russian Federation,RU,2008,-0.749933898448944,political_stability
+Russian Federation,RU,2009,-0.969926595687866,political_stability
+Russian Federation,RU,2010,-0.929458737373352,political_stability
+Russian Federation,RU,2011,-0.998262107372284,political_stability
+Russian Federation,RU,2012,-0.817712664604187,political_stability
+Russian Federation,RU,2013,-0.736093640327454,political_stability
+Russian Federation,RU,2014,-0.943617463111877,political_stability
+Russian Federation,RU,2015,-1.03222346305847,political_stability
+Russian Federation,RU,2016,-0.947688162326813,political_stability
+Russian Federation,RU,2017,-0.642759621143341,political_stability
+Russian Federation,RU,2018,-0.538330912590027,political_stability
+Russian Federation,RU,2019,-0.551088750362396,political_stability
+Russian Federation,RU,2020,-0.667407393455505,political_stability
+Russian Federation,RU,2021,-0.707898318767548,political_stability
+Russian Federation,RU,2022,-1.00599670410156,political_stability
+Russian Federation,RU,2023,-1.13433384895325,political_stability
+Saudi Arabia,SA,1996,-0.189457833766937,political_stability
+Saudi Arabia,SA,1998,0.110229097306728,political_stability
+Saudi Arabia,SA,2000,0.227821603417397,political_stability
+Saudi Arabia,SA,2002,0.00242432416416705,political_stability
+Saudi Arabia,SA,2003,0.141017645597458,political_stability
+Saudi Arabia,SA,2004,-0.65463250875473,political_stability
+Saudi Arabia,SA,2005,-0.240614011883736,political_stability
+Saudi Arabia,SA,2006,-0.522423803806305,political_stability
+Saudi Arabia,SA,2007,-0.467305243015289,political_stability
+Saudi Arabia,SA,2008,-0.336524426937103,political_stability
+Saudi Arabia,SA,2009,-0.49253523349762,political_stability
+Saudi Arabia,SA,2010,-0.226726979017258,political_stability
+Saudi Arabia,SA,2011,-0.464799642562866,political_stability
+Saudi Arabia,SA,2012,-0.480688244104385,political_stability
+Saudi Arabia,SA,2013,-0.431784123182297,political_stability
+Saudi Arabia,SA,2014,-0.285844653844833,political_stability
+Saudi Arabia,SA,2015,-0.634387195110321,political_stability
+Saudi Arabia,SA,2016,-0.472771108150482,political_stability
+Saudi Arabia,SA,2017,-0.649625718593597,political_stability
+Saudi Arabia,SA,2018,-0.660987615585327,political_stability
+Saudi Arabia,SA,2019,-0.6240473985672,political_stability
+Saudi Arabia,SA,2020,-0.650637805461884,political_stability
+Saudi Arabia,SA,2021,-0.592355370521545,political_stability
+Saudi Arabia,SA,2022,-0.355806291103363,political_stability
+Saudi Arabia,SA,2023,-0.213224530220032,political_stability
+Ukraine,UA,1996,-0.152148813009262,political_stability
+Ukraine,UA,1998,-0.120933815836906,political_stability
+Ukraine,UA,2000,-0.409486442804337,political_stability
+Ukraine,UA,2002,-0.293485134840012,political_stability
+Ukraine,UA,2003,-0.363617956638336,political_stability
+Ukraine,UA,2004,-0.471536189317703,political_stability
+Ukraine,UA,2005,-0.28536656498909,political_stability
+Ukraine,UA,2006,-0.0368776172399521,political_stability
+Ukraine,UA,2007,0.172825917601585,political_stability
+Ukraine,UA,2008,0.0425143949687481,political_stability
+Ukraine,UA,2009,-0.302319407463074,political_stability
+Ukraine,UA,2010,0.0131317190825939,political_stability
+Ukraine,UA,2011,-0.0704314634203911,political_stability
+Ukraine,UA,2012,-0.0922749042510986,political_stability
+Ukraine,UA,2013,-0.777284979820251,political_stability
+Ukraine,UA,2014,-2.02083349227905,political_stability
+Ukraine,UA,2015,-1.95953238010406,political_stability
+Ukraine,UA,2016,-1.8533319234848,political_stability
+Ukraine,UA,2017,-1.86741781234741,political_stability
+Ukraine,UA,2018,-1.87217938899994,political_stability
+Ukraine,UA,2019,-1.42837619781494,political_stability
+Ukraine,UA,2020,-1.16393649578094,political_stability
+Ukraine,UA,2021,-1.12698400020599,political_stability
+Ukraine,UA,2022,-1.94932460784912,political_stability
+Ukraine,UA,2023,-1.42982339859009,political_stability
+United States,US,1996,0.935005784034729,political_stability
+United States,US,1998,0.879612982273102,political_stability
+United States,US,2000,1.08280909061432,political_stability
+United States,US,2002,0.285476922988892,political_stability
+United States,US,2003,0.0804403498768806,political_stability
+United States,US,2004,-0.233039826154709,political_stability
+United States,US,2005,-0.0605432577431202,political_stability
+United States,US,2006,0.49083548784256,political_stability
+United States,US,2007,0.374478042125702,political_stability
+United States,US,2008,0.582659542560577,political_stability
+United States,US,2009,0.447313606739044,political_stability
+United States,US,2010,0.438403934240341,political_stability
+United States,US,2011,0.591247260570526,political_stability
+United States,US,2012,0.632442116737366,political_stability
+United States,US,2013,0.643072605133057,political_stability
+United States,US,2014,0.582419633865356,political_stability
+United States,US,2015,0.662890195846558,political_stability
+United States,US,2016,0.385635316371918,political_stability
+United States,US,2017,0.262138307094574,political_stability
+United States,US,2018,0.38623908162117,political_stability
+United States,US,2019,0.118298575282097,political_stability
+United States,US,2020,-0.0278997328132391,political_stability
+United States,US,2021,-0.0144246527925134,political_stability
+United States,US,2022,0.00870068650692701,political_stability
+United States,US,2023,0.029424749314785,political_stability
+"Venezuela, RB",VE,1996,-0.584048211574554,political_stability
+"Venezuela, RB",VE,1998,-0.537716507911682,political_stability
+"Venezuela, RB",VE,2000,-0.758916974067688,political_stability
+"Venezuela, RB",VE,2002,-1.31789720058441,political_stability
+"Venezuela, RB",VE,2003,-1.28644466400146,political_stability
+"Venezuela, RB",VE,2004,-1.3915855884552,political_stability
+"Venezuela, RB",VE,2005,-1.24433243274689,political_stability
+"Venezuela, RB",VE,2006,-1.25286757946014,political_stability
+"Venezuela, RB",VE,2007,-1.2296701669693,political_stability
+"Venezuela, RB",VE,2008,-1.31243884563446,political_stability
+"Venezuela, RB",VE,2009,-1.27778947353363,political_stability
+"Venezuela, RB",VE,2010,-1.25623667240143,political_stability
+"Venezuela, RB",VE,2011,-1.09404599666595,political_stability
+"Venezuela, RB",VE,2012,-1.02713263034821,political_stability
+"Venezuela, RB",VE,2013,-1.07763242721558,political_stability
+"Venezuela, RB",VE,2014,-0.852002203464508,political_stability
+"Venezuela, RB",VE,2015,-0.971670269966125,political_stability
+"Venezuela, RB",VE,2016,-1.0229766368866,political_stability
+"Venezuela, RB",VE,2017,-1.2522406578064,political_stability
+"Venezuela, RB",VE,2018,-1.3513343334198,political_stability
+"Venezuela, RB",VE,2019,-1.53851962089539,political_stability
+"Venezuela, RB",VE,2020,-1.55184280872345,political_stability
+"Venezuela, RB",VE,2021,-1.45497024059296,political_stability
+"Venezuela, RB",VE,2022,-1.25080645084381,political_stability
+"Venezuela, RB",VE,2023,-1.18902802467346,political_stability
+South Africa,ZA,1996,-0.379187554121017,political_stability
+South Africa,ZA,1998,-0.546053230762482,political_stability
+South Africa,ZA,2000,-0.227864950895309,political_stability
+South Africa,ZA,2002,-0.254789859056473,political_stability
+South Africa,ZA,2003,-0.312842577695847,political_stability
+South Africa,ZA,2004,-0.131729558110237,political_stability
+South Africa,ZA,2005,-0.162092119455338,political_stability
+South Africa,ZA,2006,0.0470300763845444,political_stability
+South Africa,ZA,2007,0.215346544981003,political_stability
+South Africa,ZA,2008,0.049528993666172,political_stability
+South Africa,ZA,2009,-0.114492610096931,political_stability
+South Africa,ZA,2010,-0.0294270031154156,political_stability
+South Africa,ZA,2011,0.0240315701812506,political_stability
+South Africa,ZA,2012,-0.0253867004066706,political_stability
+South Africa,ZA,2013,-0.0462945364415646,political_stability
+South Africa,ZA,2014,-0.146388962864876,political_stability
+South Africa,ZA,2015,-0.220544874668121,political_stability
+South Africa,ZA,2016,-0.149085000157356,political_stability
+South Africa,ZA,2017,-0.284803628921509,political_stability
+South Africa,ZA,2018,-0.237546816468239,political_stability
+South Africa,ZA,2019,-0.2832210958004,political_stability
+South Africa,ZA,2020,-0.252867221832275,political_stability
+South Africa,ZA,2021,-0.750981450080872,political_stability
+South Africa,ZA,2022,-0.681386351585388,political_stability
+South Africa,ZA,2023,-0.665642023086548,political_stability
