@@ -19,7 +19,7 @@ A key research aim is to verify existing literature suggesting that model perfor
 - environmental factors
 - population
 
-Data extraction focuses on **ten countries**:
+Data extraction focuses on **ten countries from year 1990 to present**:
 - India
 - Germany
 - USA
@@ -50,7 +50,7 @@ These goals include split-view graph comparisons and expanded filtering capabili
 
 
 ## Project Details and Goals
-The project connects to the IMF and World Bank to:
+The project connects to the IMF, UNESCO World Bank to:
 - Collect reliable international data from World Bank Open Data.
 - Clean, structure, and prepare datasets for further analysis.
 - Compare patterns between developed and developing economies.
@@ -68,13 +68,12 @@ The project connects to the IMF and World Bank to:
 **disclaimer: the current set up indicates data processing for 3 countries: USA, India, Germany. please update accordingly.**
 
 Install dependencies: 
+
 ```pip install pandas requests openpyxl```
 
-Create a file named 
-```fetch_data.py``` 
+Create a file to capture extraction method
 
-Run:
-```import requests import pandas as pd```
+```cat fetch_data.py``` 
 
 Define indicators and countries
 ```
