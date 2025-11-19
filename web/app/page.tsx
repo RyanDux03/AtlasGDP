@@ -32,6 +32,14 @@ export default function HomePage() {
       <main>
         {/* Hero */}
         <section className="hero">
+          <video
+          src="/globe_rotate.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="hero-globe"
+        />
           <div className="hero-overlay" />
           <div className="container hero-content">
             <h1 className="hero-title">
@@ -55,13 +63,16 @@ export default function HomePage() {
               wealth.
             </p>
 
-            <div className="map-wrapper">
-              {/* Replace with an actual map image when you have it */}
-              <div className="map-placeholder">
-                World map goes here
+            <div className="map">
+                <Image
+                  src="/world.svg"
+                  alt="World Map"
+                  width={800}
+                  height={400}
+                  priority
+                />
               </div>
             </div>
-          </div>
         </section>
 
         {/* Indicators */}

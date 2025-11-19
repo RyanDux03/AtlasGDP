@@ -140,18 +140,34 @@ p {
 
 .hero {
   position: relative;
-  height: 600px;
+  height: 650px; /* your fixed hero height */
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   background: linear-gradient(
     135deg,
-    rgba(81, 153, 92, 0.86) 4%,
-    rgba(46, 90, 127, 0.93) 66%,
-    rgba(9, 56, 36, 0.94) 100%
+    rgba(81,153,92,0.86) 4%,
+    rgba(46,90,127,0.93) 66%,
+    rgba(9,56,36,0.94) 100%
   );
-  overflow: hidden;
 }
+
+/* CENTERED + BLENDED GLOBE */
+.hero-globe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;      /* Make globe fill the hero height */
+  object-fit: cover;  /* Fit inside hero without stretching weirdly */
+  transform: translate(-50%, -50%);
+  opacity: 0.55;      /* Match your Figma glow softness */
+  mix-blend-mode: screen;  /* KEY = removes black background */
+  pointer-events: none;
+  z-index: 1;
+}
+
 
 
 /* keep overlay element but no extra gradient type */
@@ -165,6 +181,7 @@ p {
 .hero-content {
   position: relative;
   text-align: center;
+  z-index: 10;
   color: white;
   padding: 4rem 0;
 }
