@@ -23,8 +23,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${roboto.variable} ${poppins.variable} atlas-body`}>
+    <html lang="en" className={`${roboto.variable} ${poppins.variable}`}>
+      <body className="atlas-body">
         {children}
       </body>
     </html>
