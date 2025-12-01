@@ -86,7 +86,7 @@ p {
   justify-content: space-between;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 24px 64px;
+  padding: 12px 32px;
 }
 
 
@@ -97,8 +97,8 @@ p {
 }
 
 .logo img {
-  width: 89px;
-  height: 89px;
+  width: 70px;
+  height: 70px;
   flex-shrink: 0;
   aspect-ratio: 1/1;
   object-fit: cover;
@@ -108,11 +108,11 @@ p {
   flex: 1 0 0;
   color: #093824;
   font-family: var(--font-title), Poppins, sans-serif;
-  font-size: 90px;
+  font-size: 48px;
   font-style: normal;
   font-weight: 700;
   line-height: 110%;
-  letter-spacing: -2.7px;
+  letter-spacing: -1.3px;
   text-decoration: none;
 }
 
