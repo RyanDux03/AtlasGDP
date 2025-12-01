@@ -114,15 +114,19 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="site-footer">
-        <div className="container footer-inner">
+        <div className="footer-left">
           <div className="footer-logo">AtlasGDP</div>
-          <div className="footer-links">
-            <Link href="/about" className="footer-link">
-              About Us
-            </Link>
-            <Link href="/predictor" className="footer-link">
-              Predictor Tool
-            </Link>
+        </div>
+        <div className="footer-right">
+          <div className="footer-labels">
+            <div className="footer-label-content">
+              <Link href="/about" className="footer-link">
+                About Us
+              </Link>
+              <Link href="/predictor" className="footer-link">
+                Predictor Tool
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
