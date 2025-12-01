@@ -18,7 +18,7 @@ export default function PredictorPage() {
                 priority                 
               />
             </Link>
-            <span className="logo-text">AtlasGDP</span>
+            <Link href="/" className="logo-text">AtlasGDP</Link>
           </div>
           <nav className="nav-links">
             <Link href="/predictor" className="nav-link">
