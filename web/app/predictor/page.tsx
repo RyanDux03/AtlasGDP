@@ -49,14 +49,12 @@ export default function PredictorPage() {
   // Dropdown states
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [selectedGdpType, setSelectedGdpType] = useState<string>("Overall");
-  const [selectedCountry, setSelectedCountry] = useState<string>("USA");
   const [selectedComposition, setSelectedComposition] = useState<string>("All");
   const [selectedIndicators, setSelectedIndicators] = useState<string[]>([]);
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<string>("Last 5 Years");
   const [selectedModel, setSelectedModel] = useState<string>("Linear Regression");
 
   const gdpTypes = ["Overall", "Real", "Nominal", "GDP Per Capita"];
-  const countriesList = ["China", "Germany", "India", "UAE", "USA"];
   const compositionList = ["All", "Consumer Spending", "Investment", "Government Spending", "Net Exports"];
   const indicatorsList = [
     "Political Instability",
@@ -256,10 +254,10 @@ export default function PredictorPage() {
             )}
           </div>
 
-          {/* Countries Dropdown */}
+          {/* Countries Dropdown (DB-driven) */}
           <div className="predictor-dropdown-wrapper">
             <div className="predictor-dropdown" onClick={() => toggleDropdown("countries")}>
-              <span className="dropdown-label">{selectedCountry}</span>
+              <span className="dropdown-label">{currentCountry?.name || "Select Country"}</span>
               <span className="dropdown-arrow">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
                   <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
@@ -268,16 +266,16 @@ export default function PredictorPage() {
             </div>
             {openDropdown === "countries" && (
               <div className="dropdown-menu">
-                {countriesList.map((country) => (
+                {countries.map((country) => (
                   <div
-                    key={country}
-                    className={`dropdown-item ${selectedCountry === country ? "selected" : ""}`}
+                    key={country.id}
+                    className={`dropdown-item ${selectedCountryId === country.id ? "selected" : ""}`}
                     onClick={() => {
-                      setSelectedCountry(country);
+                      setSelectedCountryId(country.id);
                       setOpenDropdown(null);
                     }}
                   >
-                    {country}
+                    {country.name} ({country.iso_code})
                   </div>
                 ))}
               </div>
@@ -407,10 +405,136 @@ export default function PredictorPage() {
 
         <section className="section">
           <div className="container">
-            <div className="predictor-results" style={{ marginTop: "3rem" }}>
-              <h2 className="section-title">Results</h2>
-              <div className="map-placeholder" style={{ height: "400px" }}>
-                GDP prediction chart will appear here
+            <div className="predictor-results" style={{ marginTop: "1rem" }}>
+              <h2 className="section-title">
+                Results{" "}
+                {currentCountry ? `– ${currentCountry.name}` : ""}
+              </h2>
+
+              {/* Status / errors */}
+              {errorMsg && (
+                <p style={{ color: "red", marginTop: "0.75rem" }}>{errorMsg}</p>
+              )}
+              {loading && (
+                <p style={{ marginTop: "0.75rem" }}>Loading data…</p>
+              )}
+
+              {/* Live GDP Chart */}
+              <div
+                className="map-placeholder"
+                style={{ height: "400px", marginTop: "1.5rem" }}
+              >
+                {gdpChartData.length === 0 && !loading ? (
+                  <p style={{ marginTop: "1rem" }}>
+                    No GDP data available yet for this country.
+                  </p>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={gdpChartData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="year" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="gdp"
+                        name="GDP"
+                        stroke="#8884d8"
+                        dot={{ r: 3 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+
+              {/* Indicators per year table */}
+              <div style={{ marginTop: "2.5rem" }}>
+                <h3 className="section-title" style={{ fontSize: "1.25rem" }}>
+                  Indicators per Year{" "}
+                  {currentCountry ? `– ${currentCountry.name}` : ""}
+                </h3>
+
+                {indicatorTableData.length === 0 ? (
+                  <p style={{ marginTop: "1rem" }}>
+                    No indicator data available yet for this country.
+                  </p>
+                ) : (
+                  <div
+                    style={{
+                      marginTop: "1rem",
+                      overflowX: "auto",
+                      borderRadius: "12px",
+                      border: "1px solid #e2e8f0",
+                    }}
+                  >
+                    <table
+                      style={{
+                        width: "100%",
+                        borderCollapse: "collapse",
+                        minWidth: "700px",
+                      }}
+                    >
+                      <thead>
+                        <tr
+                          style={{
+                            backgroundColor: "#f8fafc",
+                            textAlign: "left",
+                          }}
+                        >
+                          <th
+                            style={{
+                              padding: "0.75rem 1rem",
+                              borderBottom: "1px solid #e2e8f0",
+                            }}
+                          >
+                            Year
+                          </th>
+                          {indicators.map((ind) => (
+                            <th
+                              key={ind.id}
+                              style={{
+                                padding: "0.75rem 1rem",
+                                borderBottom: "1px solid #e2e8f0",
+                                fontSize: "0.85rem",
+                              }}
+                            >
+                              {ind.label}
+                              {ind.unit ? ` (${ind.unit})` : ""}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {indicatorTableData.map((row) => (
+                          <tr key={row.year}>
+                            <td
+                              style={{
+                                padding: "0.75rem 1rem",
+                                borderBottom: "1px solid #e2e8f0",
+                                fontWeight: 600,
+                              }}
+                            >
+                              {row.year}
+                            </td>
+                            {indicators.map((ind) => (
+                              <td
+                                key={ind.id}
+                                style={{
+                                  padding: "0.75rem 1rem",
+                                  borderBottom: "1px solid #e2e8f0",
+                                  fontSize: "0.85rem",
+                                }}
+                              >
+                                {row.values[ind.code] ?? "—"}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             </div>
 
