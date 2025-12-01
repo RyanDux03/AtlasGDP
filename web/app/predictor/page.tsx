@@ -1,7 +1,7 @@
 // app/predictor/page.tsx
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
@@ -48,13 +48,15 @@ export default function PredictorPage() {
 
   // Dropdown states
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [selectedGdpType, setSelectedGdpType] = useState<string>("Overall");
-  const [selectedComposition, setSelectedComposition] = useState<string>("All");
+  const [selectedGdpType, setSelectedGdpType] = useState<string | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<string>("USA");
+  const [selectedComposition, setSelectedComposition] = useState<string | null>(null);
   const [selectedIndicators, setSelectedIndicators] = useState<string[]>([]);
-  const [selectedTimeFrame, setSelectedTimeFrame] = useState<string>("Last 5 Years");
-  const [selectedModel, setSelectedModel] = useState<string>("Linear Regression");
+  const [selectedTimeFrame, setSelectedTimeFrame] = useState<string | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
-  const gdpTypes = ["Overall", "Real", "Nominal", "GDP Per Capita"];
+  const gdpTypes = ["Overall GDP", "Real GDP", "Nominal GDP", "GDP Per Capita"];
+  const countriesList = ["USA", "China", "Germany", "India", "UAE"];
   const compositionList = ["All", "Consumer Spending", "Investment", "Government Spending", "Net Exports"];
   const indicatorsList = [
     "Political Instability",
@@ -64,6 +66,23 @@ export default function PredictorPage() {
   ];
   const timeFrames = ["Last Year", "Last 5 Years", "Last 10 Years", "Last 15 Years"];
   const models = ["Linear Regression", "Random Forest"];
+
+  // Ref for dropdown container to detect outside clicks
+  const filtersRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filtersRef.current && !filtersRef.current.contains(event.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const toggleDropdown = (name: string) => {
     setOpenDropdown(openDropdown === name ? null : name);
@@ -225,11 +244,11 @@ export default function PredictorPage() {
 
         {/* Dropdown Filters */}
         <section className="predictor-filters">
-          <div className="predictor-filters-container">
+          <div className="predictor-filters-container" ref={filtersRef}>
           {/* GDP Types Dropdown */}
           <div className="predictor-dropdown-wrapper">
             <div className="predictor-dropdown" onClick={() => toggleDropdown("gdpTypes")}>
-              <span className="dropdown-label">{selectedGdpType}</span>
+              <span className="dropdown-label">{selectedGdpType || "GDP Type"}</span>
               <span className="dropdown-arrow">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
                   <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
@@ -254,10 +273,10 @@ export default function PredictorPage() {
             )}
           </div>
 
-          {/* Countries Dropdown (DB-driven) */}
+          {/* Countries Dropdown */}
           <div className="predictor-dropdown-wrapper">
             <div className="predictor-dropdown" onClick={() => toggleDropdown("countries")}>
-              <span className="dropdown-label">{currentCountry?.name || "Select Country"}</span>
+              <span className="dropdown-label">{selectedCountry}</span>
               <span className="dropdown-arrow">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
                   <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
@@ -266,16 +285,16 @@ export default function PredictorPage() {
             </div>
             {openDropdown === "countries" && (
               <div className="dropdown-menu">
-                {countries.map((country) => (
+                {countriesList.map((country) => (
                   <div
-                    key={country.id}
-                    className={`dropdown-item ${selectedCountryId === country.id ? "selected" : ""}`}
+                    key={country}
+                    className={`dropdown-item ${selectedCountry === country ? "selected" : ""}`}
                     onClick={() => {
-                      setSelectedCountryId(country.id);
+                      setSelectedCountry(country);
                       setOpenDropdown(null);
                     }}
                   >
-                    {country.name} ({country.iso_code})
+                    {country}
                   </div>
                 ))}
               </div>
@@ -285,7 +304,7 @@ export default function PredictorPage() {
           {/* Composition Dropdown */}
           <div className="predictor-dropdown-wrapper">
             <div className="predictor-dropdown" onClick={() => toggleDropdown("composition")}>
-              <span className="dropdown-label">{selectedComposition}</span>
+              <span className="dropdown-label">{selectedComposition || "GDP Composition"}</span>
               <span className="dropdown-arrow">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
                   <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
@@ -348,7 +367,7 @@ export default function PredictorPage() {
           {/* Time Frames Dropdown */}
           <div className="predictor-dropdown-wrapper">
             <div className="predictor-dropdown" onClick={() => toggleDropdown("timeFrames")}>
-              <span className="dropdown-label">{selectedTimeFrame}</span>
+              <span className="dropdown-label">{selectedTimeFrame || "Timeframe"}</span>
               <span className="dropdown-arrow">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
                   <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
@@ -376,7 +395,7 @@ export default function PredictorPage() {
           {/* Models Dropdown */}
           <div className="predictor-dropdown-wrapper">
             <div className="predictor-dropdown" onClick={() => toggleDropdown("models")}>
-              <span className="dropdown-label">{selectedModel}</span>
+              <span className="dropdown-label">{selectedModel || "Prediction Model"}</span>
               <span className="dropdown-arrow">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
                   <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
@@ -403,12 +422,11 @@ export default function PredictorPage() {
           </div>
         </section>
 
-        <section className="section">
+        <section className="section" style={{ paddingTop: "1rem" }}>
           <div className="container">
-            <div className="predictor-results" style={{ marginTop: "1rem" }}>
-              <h2 className="section-title">
-                Results{" "}
-                {currentCountry ? `– ${currentCountry.name}` : ""}
+            <div className="predictor-results" style={{ marginTop: "0" }}>
+              <h2 className="section-title" style={{ fontSize: "50px", color: "#093824" }}>
+                Results – {selectedCountry}
               </h2>
 
               {/* Status / errors */}
@@ -450,9 +468,8 @@ export default function PredictorPage() {
 
               {/* Indicators per year table */}
               <div style={{ marginTop: "2.5rem" }}>
-                <h3 className="section-title" style={{ fontSize: "1.25rem" }}>
-                  Indicators per Year{" "}
-                  {currentCountry ? `– ${currentCountry.name}` : ""}
+                <h3 className="section-title" style={{ fontSize: "36px", color: "#2E5A7F" }}>
+                  Indicators per Year – {selectedCountry}
                 </h3>
 
                 {indicatorTableData.length === 0 ? (
@@ -540,6 +557,16 @@ export default function PredictorPage() {
 
           </div>
         </section>
+
+        {/* Understanding Your Graph Section */}
+        <section className="gdp-subsection" style={{ marginTop: "3rem" }}>
+          <div className="gdp-subsection-rectangle">
+            <h1 className="gdp-predictor-title">Understanding Your Graph</h1>
+          </div>
+        </section>
+
+        {/* White space for future content */}
+        <section style={{ minHeight: "200px" }}></section>
       </main>
 
       {/* Footer */}

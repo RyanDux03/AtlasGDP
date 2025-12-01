@@ -32,30 +32,45 @@ export default function AboutPage() {
       </header>
 
       <main>
-        <section className="section">
-          <div className="container">
-            <h1 className="section-title">About Us</h1>
-            <p className="section-subtitle">
-              AtlasGDP is a tool designed to help visualize and predict GDP trends
-              across different countries. Our team is passionate about making
-              economic data accessible and understandable for everyone.
-            </p>
-
-            <h2 className="section-title" style={{ marginTop: "2rem" }}>Our Mission</h2>
-            <p className="section-subtitle">
-              We aim to provide insights into global wealth by analyzing key
-              economic indicators and using predictive models to forecast future
-              GDP trends.
-            </p>
-
-            <h2 className="section-title" style={{ marginTop: "2rem" }}>The Team</h2>
-            <p className="section-subtitle">
-              Our team consists of data scientists, economists, and developers
-              working together to bring you accurate and meaningful economic
-              predictions.
-            </p>
+        {/* About Us Section */}
+        <section className="gdp-subsection">
+          <div className="gdp-subsection-rectangle">
+            <h1 className="gdp-predictor-title">About Us</h1>
           </div>
         </section>
+
+        {/* White space for About Us content */}
+        <section style={{ minHeight: "200px" }}></section>
+
+        {/* Inspiration Section */}
+        <section className="gdp-subsection">
+          <div className="gdp-subsection-rectangle">
+            <h1 className="gdp-predictor-title">Inspiration</h1>
+          </div>
+        </section>
+
+        {/* White space for Inspiration content */}
+        <section style={{ minHeight: "200px" }}></section>
+
+        {/* Challenges Section */}
+        <section className="gdp-subsection">
+          <div className="gdp-subsection-rectangle">
+            <h1 className="gdp-predictor-title">Challenges</h1>
+          </div>
+        </section>
+
+        {/* White space for Challenges content */}
+        <section style={{ minHeight: "200px" }}></section>
+
+        {/* Sources Section */}
+        <section className="gdp-subsection">
+          <div className="gdp-subsection-rectangle">
+            <h1 className="gdp-predictor-title">Sources</h1>
+          </div>
+        </section>
+
+        {/* White space for Sources content */}
+        <section style={{ minHeight: "200px" }}></section>
       </main>
 
       {/* Footer */}
