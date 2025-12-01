@@ -196,11 +196,11 @@ export default function PredictorPage() {
             <div className="predictor-controls" style={{ marginTop: "2rem" }}>
               <h2 className="section-title">Select a Country</h2>
               <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "1rem" }}>
-                <button className="hero-button">United States</button>
+                <button className="hero-button">USA</button>
                 <button className="hero-button">Germany</button>
                 <button className="hero-button">India</button>
                 <button className="hero-button">China</button>
-                <button className="hero-button">Brazil</button>
+                <button className="hero-button">UAE</button>
               </div>
             </div>
 
