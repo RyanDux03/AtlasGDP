@@ -9,14 +9,16 @@ export default function HomePage() {
       <header className="site-header">
         <div className="container header-inner">
           <div className="logo">
-            <Image 
-              src="/atlas_logo.png"      
-              alt="AtlasGDP Logo" 
-              width={100}                
-              height={100}
-              priority                 
-            />
-            <span className="logo-text">AtlasGDP</span>
+            <Link href="/">
+              <Image 
+                src="/atlas_logo.png"      
+                alt="AtlasGDP Logo" 
+                width={100}                
+                height={100}
+                priority                 
+              />
+            </Link>
+            <Link href="/" className="logo-text">AtlasGDP</Link>
           </div>
           <nav className="nav-links">
             <Link href="/predictor" className="nav-link">
