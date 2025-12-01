@@ -46,6 +46,37 @@ export default function PredictorPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  // Dropdown states
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [selectedGdpType, setSelectedGdpType] = useState<string>("Overall");
+  const [selectedComposition, setSelectedComposition] = useState<string>("All");
+  const [selectedIndicators, setSelectedIndicators] = useState<string[]>([]);
+  const [selectedTimeFrame, setSelectedTimeFrame] = useState<string>("Last 5 Years");
+  const [selectedModel, setSelectedModel] = useState<string>("Linear Regression");
+
+  const gdpTypes = ["Overall", "Real", "Nominal", "GDP Per Capita"];
+  const compositionList = ["All", "Consumer Spending", "Investment", "Government Spending", "Net Exports"];
+  const indicatorsList = [
+    "Political Instability",
+    "Energy Consumption", 
+    "Tourist Arrivals",
+    "Tourist Departures"
+  ];
+  const timeFrames = ["Last Year", "Last 5 Years", "Last 10 Years", "Last 15 Years"];
+  const models = ["Linear Regression", "Random Forest"];
+
+  const toggleDropdown = (name: string) => {
+    setOpenDropdown(openDropdown === name ? null : name);
+  };
+
+  const handleIndicatorToggle = (indicator: string) => {
+    setSelectedIndicators(prev => 
+      prev.includes(indicator) 
+        ? prev.filter(i => i !== indicator)
+        : [...prev, indicator]
+    );
+  };
+
   // Load countries + indicators once
   useEffect(() => {
     const loadMeta = async () => {
@@ -185,72 +216,200 @@ export default function PredictorPage() {
       </header>
 
       <main>
+        {/* GDP Subsection */}
+        <section className="gdp-subsection">
+          <div className="gdp-subsection-rectangle">
+            <h1 className="gdp-predictor-title">GDP Predictor</h1>
+          </div>
+        </section>
+
+        {/* Dropdown Filters */}
+        <section className="predictor-filters">
+          <div className="predictor-filters-container">
+          {/* GDP Types Dropdown */}
+          <div className="predictor-dropdown-wrapper">
+            <div className="predictor-dropdown" onClick={() => toggleDropdown("gdpTypes")}>
+              <span className="dropdown-label">{selectedGdpType}</span>
+              <span className="dropdown-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
+                  <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
+                </svg>
+              </span>
+            </div>
+            {openDropdown === "gdpTypes" && (
+              <div className="dropdown-menu">
+                {gdpTypes.map((type) => (
+                  <div
+                    key={type}
+                    className={`dropdown-item ${selectedGdpType === type ? "selected" : ""}`}
+                    onClick={() => {
+                      setSelectedGdpType(type);
+                      setOpenDropdown(null);
+                    }}
+                  >
+                    {type}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Countries Dropdown (DB-driven) */}
+          <div className="predictor-dropdown-wrapper">
+            <div className="predictor-dropdown" onClick={() => toggleDropdown("countries")}>
+              <span className="dropdown-label">{currentCountry?.name || "Select Country"}</span>
+              <span className="dropdown-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
+                  <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
+                </svg>
+              </span>
+            </div>
+            {openDropdown === "countries" && (
+              <div className="dropdown-menu">
+                {countries.map((country) => (
+                  <div
+                    key={country.id}
+                    className={`dropdown-item ${selectedCountryId === country.id ? "selected" : ""}`}
+                    onClick={() => {
+                      setSelectedCountryId(country.id);
+                      setOpenDropdown(null);
+                    }}
+                  >
+                    {country.name} ({country.iso_code})
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Composition Dropdown */}
+          <div className="predictor-dropdown-wrapper">
+            <div className="predictor-dropdown" onClick={() => toggleDropdown("composition")}>
+              <span className="dropdown-label">{selectedComposition}</span>
+              <span className="dropdown-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
+                  <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
+                </svg>
+              </span>
+            </div>
+            {openDropdown === "composition" && (
+              <div className="dropdown-menu">
+                {compositionList.map((comp) => (
+                  <div
+                    key={comp}
+                    className={`dropdown-item ${selectedComposition === comp ? "selected" : ""}`}
+                    onClick={() => {
+                      setSelectedComposition(comp);
+                      setOpenDropdown(null);
+                    }}
+                  >
+                    {comp}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Indicators Dropdown */}
+          <div className="predictor-dropdown-wrapper">
+            <div className="predictor-dropdown" onClick={() => toggleDropdown("indicators")}>
+              <span className="dropdown-label">
+                {selectedIndicators.length > 0 
+                  ? `${selectedIndicators.length} Selected` 
+                  : "Indicators"}
+              </span>
+              <span className="dropdown-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
+                  <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
+                </svg>
+              </span>
+            </div>
+            {openDropdown === "indicators" && (
+              <div className="dropdown-menu">
+                {indicatorsList.map((indicator) => (
+                  <div
+                    key={indicator}
+                    className={`dropdown-item ${selectedIndicators.includes(indicator) ? "selected" : ""}`}
+                    onClick={() => handleIndicatorToggle(indicator)}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedIndicators.includes(indicator)}
+                      onChange={() => {}}
+                      style={{ marginRight: "8px" }}
+                    />
+                    {indicator}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Time Frames Dropdown */}
+          <div className="predictor-dropdown-wrapper">
+            <div className="predictor-dropdown" onClick={() => toggleDropdown("timeFrames")}>
+              <span className="dropdown-label">{selectedTimeFrame}</span>
+              <span className="dropdown-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
+                  <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
+                </svg>
+              </span>
+            </div>
+            {openDropdown === "timeFrames" && (
+              <div className="dropdown-menu">
+                {timeFrames.map((frame) => (
+                  <div
+                    key={frame}
+                    className={`dropdown-item ${selectedTimeFrame === frame ? "selected" : ""}`}
+                    onClick={() => {
+                      setSelectedTimeFrame(frame);
+                      setOpenDropdown(null);
+                    }}
+                  >
+                    {frame}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Models Dropdown */}
+          <div className="predictor-dropdown-wrapper">
+            <div className="predictor-dropdown" onClick={() => toggleDropdown("models")}>
+              <span className="dropdown-label">{selectedModel}</span>
+              <span className="dropdown-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
+                  <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
+                </svg>
+              </span>
+            </div>
+            {openDropdown === "models" && (
+              <div className="dropdown-menu">
+                {models.map((model) => (
+                  <div
+                    key={model}
+                    className={`dropdown-item ${selectedModel === model ? "selected" : ""}`}
+                    onClick={() => {
+                      setSelectedModel(model);
+                      setOpenDropdown(null);
+                    }}
+                  >
+                    {model}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          </div>
+        </section>
+
         <section className="section">
           <div className="container">
-            <h1 className="section-title">GDP Predictor Tool</h1>
-            <p className="section-subtitle">
-              Use our predictor tool to explore GDP trends and forecasts for
-              different countries. Select a country and model below to get started.
-            </p>
-
-            <div className="predictor-controls" style={{ marginTop: "2rem" }}>
-              <h2 className="section-title">Select a Country</h2>
-              <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "1rem" }}>
-                <button className="hero-button">USA</button>
-                <button className="hero-button">Germany</button>
-                <button className="hero-button">India</button>
-                <button className="hero-button">China</button>
-                <button className="hero-button">UAE</button>
-              </div>
-            </div>
-
-            <div className="predictor-models" style={{ marginTop: "2rem" }}>
-              <h2 className="section-title">Select a Model</h2>
-              <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
-                <button className="hero-button">Linear Model</button>
-                <button className="hero-button">Random Forest Model</button>
-              </div>
-            </div>
-
-                        <div className="predictor-results" style={{ marginTop: "3rem" }}>
+            <div className="predictor-results" style={{ marginTop: "1rem" }}>
               <h2 className="section-title">
                 Results{" "}
                 {currentCountry ? `– ${currentCountry.name}` : ""}
               </h2>
-
-              {/* Country dropdown (DB-driven) */}
-              <div style={{ marginTop: "1rem", maxWidth: "320px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "0.5rem",
-                    fontWeight: 500,
-                  }}
-                >
-                  Select a Country (live from DB)
-                </label>
-                <select
-                  className="hero-button"
-                  style={{
-                    width: "100%",
-                    padding: "0.75rem 1rem",
-                    borderRadius: "999px",
-                    cursor: "pointer",
-                  }}
-                  value={selectedCountryId ?? ""}
-                  onChange={(e) =>
-                    setSelectedCountryId(
-                      e.target.value ? Number(e.target.value) : null
-                    )
-                  }
-                >
-                  {countries.map((country) => (
-                    <option key={country.id} value={country.id}>
-                      {country.name} ({country.iso_code})
-                    </option>
-                  ))}
-                </select>
-              </div>
 
               {/* Status / errors */}
               {errorMsg && (
