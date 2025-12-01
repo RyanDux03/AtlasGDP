@@ -5,6 +5,7 @@ import Image from "next/image";
 export default function HomePage() {
   return (
     <>
+
       {/* Header / Navbar */}
       <header className="site-header">
         <div className="container header-inner">
