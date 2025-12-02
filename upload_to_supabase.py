@@ -41,7 +41,7 @@ COUNTRY_MAPPING = {
     'IND': {'name': 'India', 'iso_code': 'IND'},
     'DEU': {'name': 'Germany', 'iso_code': 'DEU'},
     'CHN': {'name': 'China', 'iso_code': 'CHN'},
-    'ARE': {'name': 'United Arab Emirates', 'iso_code': 'ARE'},
+    'UAE': {'name': 'United Arab Emirates', 'iso_code': 'UAE'},
 }
 
 # Indicator mapping - maps CSV columns to indicator codes
@@ -62,6 +62,10 @@ INDICATOR_MAPPING = {
     'Birth_Rate_per_1000': {'code': 'birth_rate', 'label': 'Birth Rate', 'unit': 'per 1000'},
     'arrivals': {'code': 'tourism_arrivals', 'label': 'Tourism Arrivals', 'unit': 'people'},
     'departures': {'code': 'tourism_departures', 'label': 'Tourism Departures', 'unit': 'people'},
+    'household_consump_pct_gdp': {'code': 'household_consumption', 'label': 'Household Consumption (% of GDP)', 'unit': '%'},
+    'govt_consump_pct_gdp': {'code': 'govt_consumption', 'label': 'Government Consumption (% of GDP)', 'unit': '%'},
+    'gross_capital_form_pct_gdp': {'code': 'investment', 'label': 'Investment (% of GDP)', 'unit': '%'},
+    'net_exports_pct_gdp': {'code': 'net_exports', 'label': 'Net Exports (% of GDP)', 'unit': '%'},
 }
 
 def normalize_usa_data(df):
@@ -79,7 +83,7 @@ def load_csv_files():
         'IND': os.path.join(data_dir, 'IND_data.csv'),
         'DEU': os.path.join(data_dir, 'DEU_data.csv'),
         'CHN': os.path.join(data_dir, 'CHN_data.csv'),
-        'ARE': os.path.join(data_dir, 'ARE_data.csv'),
+        'UAE': os.path.join(data_dir, 'ARE_data.csv'),
     }
     
     dataframes = {}
