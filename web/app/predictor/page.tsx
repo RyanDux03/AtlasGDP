@@ -14,18 +14,14 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
+import { indicators as indicatorsData } from "@/data/indicators";
+import type { Indicator } from "@/data/indicators";
+
 export default function PredictorPage() {
     type Country = {
     id: number;
     name: string;
     iso_code: string;
-  };
-
-  type Indicator = {
-    id: number;
-    code: string;
-    label: string;
-    unit: string | null;
   };
 
   type TimeSeriesRow = {
@@ -37,7 +33,6 @@ export default function PredictorPage() {
   };
 
   const [countries, setCountries] = useState<Country[]>([]);
-  const [indicators, setIndicators] = useState<Indicator[]>([]);
   const [selectedCountryId, setSelectedCountryId] = useState<number | null>(
     null
   );
@@ -53,6 +48,8 @@ export default function PredictorPage() {
   const [selectedIndicators, setSelectedIndicators] = useState<string[]>([]);
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
+  const [hoveredIndicator, setHoveredIndicator] = useState<string | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number } | null>(null);
 
   const gdpTypes = ["Overall GDP", "GDP Growth Rate"];
   const countriesList = ["USA", "China", "Germany", "India", "UAE"];
@@ -126,24 +123,21 @@ export default function PredictorPage() {
     const loadMeta = async () => {
       setErrorMsg(null);
 
-      const [{ data: countryData, error: countryErr }, { data: indicatorData, error: indicatorErr }] =
+      const [{ data: countryData, error: countryErr }] =
         await Promise.all([
           supabase.from("countries").select("*").order("name"),
-          supabase.from("indicators").select("*"),
         ]);
 
-     if (countryErr || indicatorErr) {
+     if (countryErr) {
   console.error("countriesErr:", countryErr);
-  console.error("indicatorsErr:", indicatorErr);
   setErrorMsg(
-    (countryErr || indicatorErr)?.message || "Failed to load metadata from database."
+    countryErr?.message || "Failed to load metadata from database."
   );
   return;
 }
 
 
       setCountries(countryData || []);
-      setIndicators(indicatorData || []);
 
       if (countryData && countryData.length > 0) {
         setSelectedCountryId(countryData[0].id);
@@ -184,8 +178,8 @@ export default function PredictorPage() {
 
   // GDP indicator reference
   const gdpIndicator = useMemo(
-    () => indicators.find((ind) => ind.code === "gdp"),
-    [indicators]
+    () => indicatorsData.find((ind) => ind.code === "gdp"),
+    []
   );
 
   // Combined chart data with all filters applied
@@ -193,7 +187,7 @@ export default function PredictorPage() {
     if (!gdpIndicator) return [];
 
     // Determine which GDP metric to show
-    const gdpGrowthIndicator = indicators.find(ind => ind.code === 'gdp_growth');
+    const gdpGrowthIndicator = indicatorsData.find(ind => ind.code === 'gdp_growth');
     const primaryGdpIndicatorId = selectedGdpType === 'GDP Growth Rate' && gdpGrowthIndicator 
       ? gdpGrowthIndicator.id 
       : gdpIndicator.id;
@@ -201,11 +195,11 @@ export default function PredictorPage() {
 
     // Get composition codes if composition filter is active
     const compositionCodes = selectedComposition ? compositionCodeMap[selectedComposition] || [] : [];
-    const compositionIndicatorObjs = indicators.filter(ind => compositionCodes.includes(ind.code));
+    const compositionIndicatorObjs = indicatorsData.filter(ind => compositionCodes.includes(ind.code));
 
     // Get indicator codes for selected indicators
     const selectedCodes = selectedIndicators.map(name => indicatorCodeMap[name]);
-    const selectedIndicatorObjs = indicators.filter(ind => selectedCodes.includes(ind.code));
+    const selectedIndicatorObjs = indicatorsData.filter(ind => selectedCodes.includes(ind.code));
 
     // Group all data by year
     const yearMap: Record<number, Record<string, number>> = {};
@@ -268,14 +262,14 @@ export default function PredictorPage() {
     }
 
     return result;
-  }, [timeSeries, gdpIndicator, selectedGdpType, selectedComposition, selectedIndicators, selectedTimeFrame, indicators, indicatorCodeMap, compositionCodeMap]);
+  }, [timeSeries, gdpIndicator, selectedGdpType, selectedComposition, selectedIndicators, selectedTimeFrame, indicatorCodeMap, compositionCodeMap]);
 
   // Indicators per year table
   const indicatorMap = useMemo(() => {
     const map = new Map<number, Indicator>();
-    indicators.forEach((ind) => map.set(ind.id, ind));
+    indicatorsData.forEach((ind) => map.set(ind.id, ind));
     return map;
-  }, [indicators]);
+  }, []);
 
   const indicatorTableData = useMemo(() => {
     const yearMap: Record<number, { [indicatorCode: string]: number | null }> =
@@ -759,131 +753,6 @@ export default function PredictorPage() {
                 )}
                 </div>
               </div>
-
-              {/* Indicators per year table */}
-              <div style={{ marginTop: "2.5rem" }}>
-                <h3 className="section-title" style={{ fontSize: "36px", color: "#2E5A7F" }}>
-                  Indicators per Year – {selectedCountry}
-                </h3>
-
-                {indicatorTableData.length === 0 ? (
-                  <p style={{ marginTop: "1rem" }}>
-                    No indicator data available yet for this country.
-                  </p>
-                ) : (
-                  <div
-                    style={{
-                      marginTop: "1rem",
-                      overflowX: "auto",
-                      borderRadius: "12px",
-                      border: "1px solid #e2e8f0",
-                    }}
-                  >
-                    <table
-                      style={{
-                        width: "100%",
-                        borderCollapse: "collapse",
-                        minWidth: "700px",
-                      }}
-                    >
-                      <thead>
-                        <tr
-                          style={{
-                            backgroundColor: "#f8fafc",
-                            textAlign: "left",
-                          }}
-                        >
-                          <th
-                            style={{
-                              padding: "0.75rem 1rem",
-                              borderBottom: "1px solid #e2e8f0",
-                            }}
-                          >
-                            Year
-                          </th>
-                          {indicators.map((ind) => (
-                            <th
-                              key={ind.id}
-                              style={{
-                                padding: "0.75rem 1rem",
-                                borderBottom: "1px solid #e2e8f0",
-                                fontSize: "0.85rem",
-                              }}
-                            >
-                              {ind.label}
-                              {ind.unit ? ` (${ind.unit})` : ""}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {indicatorTableData.map((row) => (
-                          <tr key={row.year}>
-                            <td
-                              style={{
-                                padding: "0.75rem 1rem",
-                                borderBottom: "1px solid #e2e8f0",
-                                fontWeight: 600,
-                              }}
-                            >
-                              {row.year}
-                            </td>
-                            {indicators.map((ind) => {
-                              const value = row.values[ind.code];
-                              let formattedValue = "—";
-                              
-                              if (value != null) {
-                                // Format based on indicator type
-                                if (ind.code === "gdp" || ind.code === "fdi") {
-                                  // Convert to billions for GDP and FDI
-                                  formattedValue = `$${(value / 1_000_000_000).toFixed(2)}B`;
-                                } else if (ind.code === "population") {
-                                  // Format population with commas
-                                  formattedValue = value.toLocaleString();
-                                } else if (ind.code === "tourism_arrivals" || ind.code === "tourism_departures") {
-                                  // Format large numbers with K/M
-                                  if (value >= 1_000_000) {
-                                    formattedValue = `${(value / 1_000_000).toFixed(1)}M`;
-                                  } else if (value >= 1_000) {
-                                    formattedValue = `${(value / 1_000).toFixed(1)}K`;
-                                  } else {
-                                    formattedValue = value.toFixed(0);
-                                  }
-                                } else if (
-                                  ind.code.includes("pct") || 
-                                  ind.code.includes("growth") || 
-                                  ind.code === "inflation" ||
-                                  ind.code === "unemployment" ||
-                                  ind.code === "literacy_rate"
-                                ) {
-                                  // Percentages
-                                  formattedValue = `${value.toFixed(2)}%`;
-                                } else {
-                                  // Default: 2 decimal places
-                                  formattedValue = value.toFixed(2);
-                                }
-                              }
-                              
-                              return (
-                                <td
-                                  key={ind.id}
-                                  style={{
-                                    padding: "0.75rem 1rem",
-                                    borderBottom: "1px solid #e2e8f0",
-                                    fontSize: "0.85rem",
-                                  }}
-                                >
-                                  {formattedValue}
-                                </td>
-                              );
-                            })}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
             </div>
 
           </div>
@@ -896,207 +765,218 @@ export default function PredictorPage() {
           </div>
         </section>
 
-        {/* Indicator Explanations */}
+        {/* Indicators per year table with hover tooltips */}
         <section className="section" style={{ paddingTop: "2rem", paddingBottom: "3rem" }}>
           <div className="container">
-            <div style={{ 
-              display: "grid", 
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: "1.5rem",
-              marginTop: "1rem"
-            }}>
-              {/* GDP */}
-              <div style={{ 
-                padding: "1.5rem", 
-                backgroundColor: "#f8fafc", 
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0"
-              }}>
-                <h3 style={{ color: "#2E5A7F", fontSize: "1.25rem", marginBottom: "0.5rem" }}>
-                  Gross Domestic Product (GDP)
-                </h3>
-                <p style={{ fontSize: "0.95rem", lineHeight: "1.6", color: "#475569" }}>
-                  The total monetary value of all goods and services produced within a country. 
-                  Measured in billions of US dollars (USD). Higher GDP indicates a larger economy.
-                </p>
-              </div>
+            <h3 className="section-title" style={{ fontSize: "36px", color: "#2E5A7F", marginBottom: "1.5rem" }}>
+              Indicators per Year – {selectedCountry}
+            </h3>
+            <p style={{ fontSize: "1rem", color: "#64748b", marginBottom: "1.5rem" }}>
+              Hover over column headers to see indicator definitions
+            </p>
+            
+            {/* Global tooltip that appears below hovered column */}
+            {hoveredIndicator && tooltipPosition && (() => {
+              const indicator = indicatorsData.find(ind => ind.code === hoveredIndicator);
+              if (!indicator) return null;
+              
+              return (
+                <div style={{
+                  position: "fixed",
+                  top: `${tooltipPosition.top}px`,
+                  left: `${tooltipPosition.left}px`,
+                  transform: "translateX(-50%)",
+                  padding: "16px",
+                  backgroundColor: "#1e293b",
+                  color: "white",
+                  borderRadius: "8px",
+                  fontSize: "0.875rem",
+                  lineHeight: "1.5",
+                  width: "320px",
+                  maxWidth: "90vw",
+                  zIndex: 9999,
+                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
+                  pointerEvents: "none",
+                }}>
+                  <div style={{
+                    position: "absolute",
+                    top: "-8px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: "0",
+                    height: "0",
+                    borderLeft: "8px solid transparent",
+                    borderRight: "8px solid transparent",
+                    borderBottom: "8px solid #1e293b",
+                  }} />
+                  <strong style={{ display: "block", marginBottom: "8px", fontSize: "0.95rem" }}>
+                    {indicator.label}
+                  </strong>
+                  <div style={{ color: "#e2e8f0" }}>
+                    {indicator.short}
+                  </div>
+                </div>
+              );
+            })()}
 
-              {/* GDP Growth Rate */}
-              <div style={{ 
-                padding: "1.5rem", 
-                backgroundColor: "#f8fafc", 
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0"
-              }}>
-                <h3 style={{ color: "#2E5A7F", fontSize: "1.25rem", marginBottom: "0.5rem" }}>
-                  GDP Growth Rate (%)
-                </h3>
-                <p style={{ fontSize: "0.95rem", lineHeight: "1.6", color: "#475569" }}>
-                  The annual percentage increase or decrease in GDP. Positive values indicate economic 
-                  expansion, while negative values suggest contraction.
-                </p>
-              </div>
+            {indicatorTableData.length === 0 ? (
+              <p style={{ marginTop: "1rem" }}>
+                No indicator data available yet for this country.
+              </p>
+            ) : (
+              <div
+                style={{
+                  marginTop: "1rem",
+                  overflowX: "auto",
+                  width: "100%",
+                  position: "relative",
+                }}
+              >
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    tableLayout: "auto",
+                  }}
+                >
+                  <thead>
+                    <tr
+                      style={{
+                        backgroundColor: "#f8fafc",
+                        textAlign: "left",
+                      }}
+                    >
+                      <th
+                        style={{
+                          padding: "0.75rem 1rem",
+                          fontSize: "0.9rem",
+                          fontWeight: 600,
+                        }}
+                      >
+                        Year
+                      </th>
+                      {indicatorsData.map((ind) => {
+                        return (
+                          <th
+                            key={ind.id}
+                            style={{
+                              padding: "0.75rem 1rem",
+                              fontSize: "0.85rem",
+                              fontWeight: 600,
+                              cursor: "help",
+                              position: "relative",
+                              transition: "background-color 0.2s",
+                              backgroundColor: hoveredIndicator === ind.code ? "#e0f2fe" : "transparent",
+                              whiteSpace: "nowrap",
+                            }}
+                         onMouseEnter={(e) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  setTooltipPosition({
+    top: rect.bottom, // no scrollY here
+    left: rect.left + rect.width / 2, // no scrollX either
+  });
+  setHoveredIndicator(ind.code);
+}}
 
-              {/* Population */}
-              <div style={{ 
-                padding: "1.5rem", 
-                backgroundColor: "#f8fafc", 
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0"
-              }}>
-                <h3 style={{ color: "#2E5A7F", fontSize: "1.25rem", marginBottom: "0.5rem" }}>
-                  Population
-                </h3>
-                <p style={{ fontSize: "0.95rem", lineHeight: "1.6", color: "#475569" }}>
-                  Total number of people living in the country. A larger population can contribute 
-                  to economic growth through workforce and consumer demand.
-                </p>
+                            onMouseLeave={() => {
+                              setHoveredIndicator(null);
+                              setTooltipPosition(null);
+                            }}
+                          >
+                            <div style={{ 
+                              display: "flex", 
+                              alignItems: "center", 
+                              gap: "4px"
+                            }}>
+                              {ind.label}
+                              {ind.unit ? ` (${ind.unit})` : ""}
+                              <span style={{ 
+                                fontSize: "0.75rem", 
+                                color: "#94a3b8",
+                                fontWeight: "normal"
+                              }}>ⓘ</span>
+                            </div>
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {indicatorTableData.map((row, rowIndex) => (
+                      <tr 
+                        key={row.year}
+                        style={{
+                          backgroundColor: rowIndex % 2 === 0 ? "white" : "#f8fafc",
+                        }}
+                      >
+                        <td
+                          style={{
+                            padding: "0.75rem 1rem",
+                            fontWeight: 600,
+                            fontSize: "0.9rem",
+                          }}
+                        >
+                          {row.year}
+                        </td>
+                        {indicatorsData.map((ind) => {
+                          const value = row.values[ind.code];
+                          let formattedValue = "—";
+                          
+                          if (value != null) {
+                            // Format based on indicator type
+                            if (ind.code === "gdp" || ind.code === "fdi") {
+                              // Convert to billions for GDP and FDI
+                              formattedValue = `$${(value / 1_000_000_000).toFixed(2)}B`;
+                            } else if (ind.code === "population") {
+                              // Format population with commas
+                              formattedValue = value.toLocaleString();
+                            } else if (ind.code === "tourism_arrivals" || ind.code === "tourism_departures") {
+                              // Format large numbers with K/M
+                              if (value >= 1_000_000) {
+                                formattedValue = `${(value / 1_000_000).toFixed(1)}M`;
+                              } else if (value >= 1_000) {
+                                formattedValue = `${(value / 1_000).toFixed(1)}K`;
+                              } else {
+                                formattedValue = value.toFixed(0);
+                              }
+                            } else if (
+                              ind.code.includes("pct") || 
+                              ind.code.includes("growth") || 
+                              ind.code === "inflation" ||
+                              ind.code === "unemployment" ||
+                              ind.code === "literacy_rate" ||
+                              ind.code === "household_consumption" ||
+                              ind.code === "govt_consumption" ||
+                              ind.code === "investment" ||
+                              ind.code === "net_exports"
+                            ) {
+                              // Percentages
+                              formattedValue = `${value.toFixed(2)}%`;
+                            } else {
+                              // Default: 2 decimal places
+                              formattedValue = value.toFixed(2);
+                            }
+                          }
+                          
+                          return (
+                            <td
+                              key={ind.id}
+                              style={{
+                                padding: "0.75rem 1rem",
+                                fontSize: "0.85rem",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {formattedValue}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-
-              {/* Energy Use */}
-              <div style={{ 
-                padding: "1.5rem", 
-                backgroundColor: "#f8fafc", 
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0"
-              }}>
-                <h3 style={{ color: "#2E5A7F", fontSize: "1.25rem", marginBottom: "0.5rem" }}>
-                  Energy Use
-                </h3>
-                <p style={{ fontSize: "0.95rem", lineHeight: "1.6", color: "#475569" }}>
-                  Energy consumption per capita measured in kilograms of oil equivalent. 
-                  Higher values often correlate with industrialization and development.
-                </p>
-              </div>
-
-              {/* Political Stability */}
-              <div style={{ 
-                padding: "1.5rem", 
-                backgroundColor: "#f8fafc", 
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0"
-              }}>
-                <h3 style={{ color: "#2E5A7F", fontSize: "1.25rem", marginBottom: "0.5rem" }}>
-                  Political Stability
-                </h3>
-                <p style={{ fontSize: "0.95rem", lineHeight: "1.6", color: "#475569" }}>
-                  An index measuring the likelihood of political instability or violence. 
-                  Higher stability typically supports economic growth and foreign investment.
-                </p>
-              </div>
-
-              {/* Exports & Imports */}
-              <div style={{ 
-                padding: "1.5rem", 
-                backgroundColor: "#f8fafc", 
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0"
-              }}>
-                <h3 style={{ color: "#2E5A7F", fontSize: "1.25rem", marginBottom: "0.5rem" }}>
-                  Exports & Imports (% of GDP)
-                </h3>
-                <p style={{ fontSize: "0.95rem", lineHeight: "1.6", color: "#475569" }}>
-                  The value of goods and services sold to (exports) or bought from (imports) other countries, 
-                  expressed as a percentage of GDP. Indicates trade openness.
-                </p>
-              </div>
-
-              {/* Inflation */}
-              <div style={{ 
-                padding: "1.5rem", 
-                backgroundColor: "#f8fafc", 
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0"
-              }}>
-                <h3 style={{ color: "#2E5A7F", fontSize: "1.25rem", marginBottom: "0.5rem" }}>
-                  Inflation (CPI %)
-                </h3>
-                <p style={{ fontSize: "0.95rem", lineHeight: "1.6", color: "#475569" }}>
-                  The rate at which prices for goods and services rise, measured by the Consumer Price Index. 
-                  Moderate inflation is normal; high inflation can harm purchasing power.
-                </p>
-              </div>
-
-              {/* Unemployment */}
-              <div style={{ 
-                padding: "1.5rem", 
-                backgroundColor: "#f8fafc", 
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0"
-              }}>
-                <h3 style={{ color: "#2E5A7F", fontSize: "1.25rem", marginBottom: "0.5rem" }}>
-                  Unemployment Rate (%)
-                </h3>
-                <p style={{ fontSize: "0.95rem", lineHeight: "1.6", color: "#475569" }}>
-                  Percentage of the labor force that is jobless and actively seeking employment. 
-                  Lower rates generally indicate a healthier economy.
-                </p>
-              </div>
-
-              {/* Birth Rate */}
-              <div style={{ 
-                padding: "1.5rem", 
-                backgroundColor: "#f8fafc", 
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0"
-              }}>
-                <h3 style={{ color: "#2E5A7F", fontSize: "1.25rem", marginBottom: "0.5rem" }}>
-                  Birth Rate
-                </h3>
-                <p style={{ fontSize: "0.95rem", lineHeight: "1.6", color: "#475569" }}>
-                  Number of live births per 1,000 people. Affects population growth, 
-                  workforce size, and long-term economic planning.
-                </p>
-              </div>
-
-              {/* FDI */}
-              <div style={{ 
-                padding: "1.5rem", 
-                backgroundColor: "#f8fafc", 
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0"
-              }}>
-                <h3 style={{ color: "#2E5A7F", fontSize: "1.25rem", marginBottom: "0.5rem" }}>
-                  Foreign Direct Investment (FDI)
-                </h3>
-                <p style={{ fontSize: "0.95rem", lineHeight: "1.6", color: "#475569" }}>
-                  Net inflows of investment from foreign entities in USD. Higher FDI indicates 
-                  investor confidence and can boost economic development.
-                </p>
-              </div>
-
-              {/* Literacy Rate */}
-              <div style={{ 
-                padding: "1.5rem", 
-                backgroundColor: "#f8fafc", 
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0"
-              }}>
-                <h3 style={{ color: "#2E5A7F", fontSize: "1.25rem", marginBottom: "0.5rem" }}>
-                  Literacy Rate (%)
-                </h3>
-                <p style={{ fontSize: "0.95rem", lineHeight: "1.6", color: "#475569" }}>
-                  Percentage of the population that can read and write. Higher literacy supports 
-                  economic productivity and innovation.
-                </p>
-              </div>
-
-              {/* Tourism */}
-              <div style={{ 
-                padding: "1.5rem", 
-                backgroundColor: "#f8fafc", 
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0"
-              }}>
-                <h3 style={{ color: "#2E5A7F", fontSize: "1.25rem", marginBottom: "0.5rem" }}>
-                  Tourism Arrivals & Departures
-                </h3>
-                <p style={{ fontSize: "0.95rem", lineHeight: "1.6", color: "#475569" }}>
-                  Number of international visitors entering (arrivals) or citizens traveling abroad (departures). 
-                  Tourism contributes to GDP and cultural exchange.
-                </p>
-              </div>
-            </div>
+            )}
           </div>
         </section>
       </main>
