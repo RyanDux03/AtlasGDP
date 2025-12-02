@@ -19,9 +19,13 @@ function WorldMap() {
 
   const handleCountryHover = (countryCode: string | null) => {
     setHoveredCountry(countryCode);
-    if (countryCode) {
-      console.log(`Hovering ${countryCode}, color: ${countryColors[countryCode]}`);
+  };
+
+  const getCountryFill = (countryId: string) => {
+    if (hoveredCountry === countryId && countryColors[countryId]) {
+      return countryColors[countryId];
     }
+    return '#ececec';
   };
 
   return (
@@ -47,11 +51,8 @@ function WorldMap() {
       >
         <style>{`
           .country-hover {
-            transition: fill 0.3s ease, opacity 0.3s ease;
+            transition: fill 0.3s ease;
             cursor: pointer;
-          }
-          .country-hover:hover {
-            opacity: 0.8;
           }
         `}</style>
         

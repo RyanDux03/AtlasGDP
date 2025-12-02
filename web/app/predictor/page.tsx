@@ -32,11 +32,23 @@ export default function PredictorPage() {
     value: number | null;
   };
 
+  type PredictionRow = {
+    id: number;
+    country_id: number;
+    indicator_id: number;
+    year: number;
+    actual_value: number | null;
+    predicted_value: number | null;
+    is_test: boolean;
+    is_forecast: boolean;
+  };
+
   const [countries, setCountries] = useState<Country[]>([]);
   const [selectedCountryId, setSelectedCountryId] = useState<number | null>(
     null
   );
   const [timeSeries, setTimeSeries] = useState<TimeSeriesRow[]>([]);
+  const [predictions, setPredictions] = useState<PredictionRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -147,33 +159,46 @@ export default function PredictorPage() {
     loadMeta();
   }, []);
 
-  // Load time_series when country changes
+  // Load time_series and predictions when country changes
   useEffect(() => {
     if (!selectedCountryId) return;
 
-    const loadSeries = async () => {
+    const loadData = async () => {
       setLoading(true);
       setErrorMsg(null);
 
-      const { data, error } = await supabase
-        .from("time_series")
-        .select("*")
-        .eq("country_id", selectedCountryId)
-        .order("year", { ascending: true });
+      const [timeSeriesResult, predictionsResult] = await Promise.all([
+        supabase
+          .from("time_series")
+          .select("*")
+          .eq("country_id", selectedCountryId)
+          .order("year", { ascending: true }),
+        supabase
+          .from("predictions")
+          .select("*")
+          .eq("country_id", selectedCountryId)
+          .order("year", { ascending: true })
+      ]);
 
       setLoading(false);
 
-      if (error) {
-        console.error(error);
+      if (timeSeriesResult.error) {
+        console.error(timeSeriesResult.error);
         setErrorMsg("Failed to load time series data.");
         setTimeSeries([]);
-        return;
+      } else {
+        setTimeSeries(timeSeriesResult.data || []);
       }
 
-      setTimeSeries(data || []);
+      if (predictionsResult.error) {
+        console.error(predictionsResult.error);
+        setPredictions([]);
+      } else {
+        setPredictions(predictionsResult.data || []);
+      }
     };
 
-    loadSeries();
+    loadData();
   }, [selectedCountryId]);
 
   // GDP indicator reference
@@ -234,6 +259,25 @@ export default function PredictorPage() {
       }
     }
 
+    // Add prediction data for GDP
+    for (const pred of predictions) {
+      if (pred.indicator_id !== primaryGdpIndicatorId) continue;
+      
+      if (!yearMap[pred.year]) {
+        yearMap[pred.year] = { year: pred.year } as Record<string, number>;
+      }
+      
+      // Add actual value if it exists in prediction (for test years)
+      if (pred.actual_value != null) {
+        yearMap[pred.year][primaryGdpCode] = pred.actual_value;
+      }
+      
+      // Add predicted value
+      if (pred.predicted_value != null) {
+        yearMap[pred.year][`${primaryGdpCode}_predicted`] = pred.predicted_value;
+      }
+    }
+
     let result = Object.values(yearMap).sort((a, b) => a.year - b.year);
     
     // Apply time frame filter
@@ -262,7 +306,7 @@ export default function PredictorPage() {
     }
 
     return result;
-  }, [timeSeries, gdpIndicator, selectedGdpType, selectedComposition, selectedIndicators, selectedTimeFrame, indicatorCodeMap, compositionCodeMap]);
+  }, [timeSeries, predictions, gdpIndicator, selectedGdpType, selectedComposition, selectedIndicators, selectedTimeFrame, indicatorCodeMap, compositionCodeMap]);
 
   // Indicators per year table
   const indicatorMap = useMemo(() => {
@@ -633,6 +677,17 @@ export default function PredictorPage() {
                           dot={{ r: 4, fill: '#2E5A7F', strokeWidth: 0 }}
                           activeDot={{ r: 6 }}
                         />
+                        <Line
+                          yAxisId="left"
+                          type="monotone"
+                          dataKey={selectedGdpType === 'GDP Growth Rate' ? 'gdp_growth_predicted' : 'gdp_predicted'}
+                          name={`${selectedGdpType || 'GDP'} (Predicted)`}
+                          stroke="#FF6B6B"
+                          strokeWidth={2}
+                          strokeDasharray="5 5"
+                          dot={{ r: 3, fill: '#FF6B6B', strokeWidth: 0 }}
+                          activeDot={{ r: 5 }}
+                        />
                         {selectedComposition && (() => {
                           const compositionColors: Record<string, string> = {
                             'household_consumption': '#10B981',
@@ -698,8 +753,20 @@ export default function PredictorPage() {
                           backgroundColor: '#2E5A7F',
                           borderRadius: '2px'
                         }} />
-                        <span style={{ fontSize: '14px', fontWeight: 600, color: '#2E5A7F' }}>
+                        <span style={{ fontSize: '14px', fontWeight: 500 }}>
                           {selectedGdpType || 'GDP'}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ 
+                          width: '30px', 
+                          height: '3px', 
+                          backgroundColor: '#FF6B6B',
+                          borderRadius: '2px',
+                          backgroundImage: 'repeating-linear-gradient(90deg, #FF6B6B 0px, #FF6B6B 5px, transparent 5px, transparent 10px)'
+                        }} />
+                        <span style={{ fontSize: '14px', fontWeight: 500 }}>
+                          {selectedGdpType || 'GDP'} (Predicted)
                         </span>
                       </div>
                       {selectedComposition && (() => {
