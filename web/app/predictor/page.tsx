@@ -98,8 +98,8 @@ export default function PredictorPage() {
     "Government Spending": ["govt_consumption"],
     "Net Exports": ["net_exports"]
   }), []);
-  const timeFrames = ["Last Year", "Last 5 Years", "Last 10 Years", "Last 15 Years"];
-  const models = ["Linear Regression", "Random Forest"];
+  const timeFrames = ["All Time", "Last 5 Years", "Last 10 Years", "Last 15 Years"];
+  const models = ["Linear Regression", "Random Forest", "Hybrid Model"];
 
   // Ref for dropdown container to detect outside clicks
   const filtersRef = useRef<HTMLDivElement>(null);
@@ -281,14 +281,11 @@ export default function PredictorPage() {
     let result = Object.values(yearMap).sort((a, b) => a.year - b.year);
     
     // Apply time frame filter
-    if (selectedTimeFrame && result.length > 0) {
+    if (selectedTimeFrame && result.length > 0 && selectedTimeFrame !== 'All Time') {
       const currentYear = Math.max(...result.map(d => d.year));
       let yearsBack = 0;
       
       switch(selectedTimeFrame) {
-        case 'Last Year':
-          yearsBack = 1;
-          break;
         case 'Last 5 Years':
           yearsBack = 5;
           break;
@@ -304,6 +301,7 @@ export default function PredictorPage() {
         result = result.filter(d => d.year >= currentYear - yearsBack + 1);
       }
     }
+    // When "All Time" is selected, no filtering is applied - show all available years
 
     return result;
   }, [timeSeries, predictions, gdpIndicator, selectedGdpType, selectedComposition, selectedIndicators, selectedTimeFrame, indicatorCodeMap, compositionCodeMap]);
