@@ -101,32 +101,6 @@ function ChallengeDropdown({ challenge }: { challenge: typeof challenges[0] }) {
 export default function AboutPage() {
   return (
     <>
-      {/* Header / Navbar */}
-      <header className="site-header">
-        <div className="container header-inner">
-          <div className="logo">
-            <Link href="/">
-              <Image 
-                src="/atlas_logo.png"      
-                alt="AtlasGDP Logo" 
-                width={100}                
-                height={100}
-                priority                 
-              />
-            </Link>
-            <Link href="/" className="logo-text">AtlasGDP</Link>
-          </div>
-          <nav className="nav-links">
-            <Link href="/predictor" className="nav-link">
-              Predictor Tool
-            </Link>
-            <Link href="/about" className="nav-link">
-              About Us
-            </Link>
-          </nav>
-        </div>
-      </header>
-
       <main>
         {/* About Us Section */}
         <section className="gdp-subsection">
@@ -283,25 +257,6 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="site-footer">
-        <div className="footer-left">
-          <div className="footer-logo">AtlasGDP</div>
-        </div>
-        <div className="footer-right">
-          <div className="footer-labels">
-            <div className="footer-label-content">
-              <Link href="/about" className="footer-link">
-                About Us
-              </Link>
-              <Link href="/predictor" className="footer-link">
-                Predictor Tool
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </>
   );
 }

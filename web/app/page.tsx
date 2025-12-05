@@ -2,21 +2,20 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { indicators } from "@/data/indicators";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 function WorldMap() {
   const [svgContent, setSvgContent] = useState<string>("");
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
 
-  const supportedCountries: Record<string, { name: string; color: string }> = {
+  const supportedCountries: Record<string, { name: string; color: string }> = useMemo(() => ({
     'US': { name: 'United States', color: '#3e7ebb' },
     'CN': { name: 'China', color: '#e14d42' },
     'IN': { name: 'India', color: '#73b67b' },
     'DE': { name: 'Germany', color: '#dcb958' },
     'AE': { name: 'United Arab Emirates', color: '#b37bb2' }
-  };
+  }), []);
 
   useEffect(() => {
     fetch('/world.svg')
@@ -40,7 +39,7 @@ function WorldMap() {
         
         setSvgContent(modifiedSvg);
       });
-  }, []);
+  }, [supportedCountries]);
 
   const handleMouseOver = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -271,33 +270,6 @@ function IndicatorCard({ indicator, index, isExpanded }: {
 export default function HomePage() {
   return (
     <>
-
-      {/* Header / Navbar */}
-      <header className="site-header">
-        <div className="container header-inner">
-          <div className="logo">
-            <Link href="/">
-              <Image 
-                src="/atlas_logo.png"      
-                alt="AtlasGDP Logo" 
-                width={100}                
-                height={100}
-                priority                 
-              />
-            </Link>
-            <Link href="/" className="logo-text">AtlasGDP</Link>
-          </div>
-          <nav className="nav-links">
-            <Link href="/predictor" className="nav-link">
-              Predictor Tool
-            </Link>
-            <Link href="/about" className="nav-link">
-              About Us
-            </Link>
-          </nav>
-        </div>
-      </header>
-
       <main>
         {/* Hero */}
         <section className="hero">
@@ -330,6 +302,14 @@ export default function HomePage() {
               Our predictor tool currently supports 5 different countries with
               varying economies to give a wide range of insights on the world’s
               wealth.
+              <br />
+              <br/ >
+                 How do we select these countries? <br />
+              USA - Large Developed Economy<br />
+              China - Rapidly Growing Economy<br />
+              India - Emerging Market with High Growth Potential<br />
+              Germany - Stable European Economy<br />
+              UAE - Wealthy Economy with Unique Dynamics
             </p>
 
             <div className="map">
@@ -343,8 +323,7 @@ export default function HomePage() {
           <div className="container">
             <h2 className="section-title">Indicators</h2>
             <p className="section-subtitle">
-              We know GDP is a generalizing number, so our team has narrowed
-              down a list of key economic indicators to help you understand the full picture:
+              Steering from traditional economic indicators, we incorporate a diverse set of non-traditional metrics (with traditional GDP as the base) to provide a holistic view of a country&apos;s economic health and growth potential.
             </p>
 
             <div style={{ 
@@ -354,28 +333,12 @@ export default function HomePage() {
               marginTop: "2rem"
             }}>
               <IndicatorGroup 
-                title="Economic Output" 
-                codes={["gdp", "gdp_growth", "net_exports"]} 
+                title="Non-Traditional Indicators" 
+                codes={["birth_rate", "literacy_rate", "population", "tourism_arrivals", "tourism_departures", "political_stability", "energy_use"]} 
               />
               <IndicatorGroup 
-                title="Demographics" 
-                codes={["population", "birth_rate", "literacy_rate"]} 
-              />
-              <IndicatorGroup 
-                title="Trade & Globalization" 
-                codes={["exports_pct_gdp", "imports_pct_gdp", "tourism_arrivals", "tourism_departures"]} 
-              />
-              <IndicatorGroup 
-                title="Investment & Spending" 
-                codes={["fdi", "household_consumption", "govt_consumption", "investment"]} 
-              />
-              <IndicatorGroup 
-                title="Governance & Stability" 
-                codes={["political_stability", "unemployment", "inflation"]} 
-              />
-              <IndicatorGroup 
-                title="Energy & Environment" 
-                codes={["energy_use"]} 
+                title="Traditional Indicators" 
+                codes={["gdp", "gdp_growth", "exports_pct_gdp", "imports_pct_gdp", "inflation", "unemployment", "fdi", "household_consumption", "govt_consumption", "investment", "net_exports"]} 
               />
             </div>
           </div>
@@ -387,32 +350,13 @@ export default function HomePage() {
             <h2 className="section-title">Prediction Models</h2>
             <p className="section-subtitle">
               Unlike other tools, we want to use current data and trends to see
-              where countries are going. We use a linear model and a random
-              forest model to guide our prediction. You can toggle between each
+              where countries are going. We use a linear model, a random
+              forest, and a hybrid model to guide our prediction. You can select between each
               model to get a varying look on our forecast for the future GDP.
             </p>
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="site-footer">
-        <div className="footer-left">
-          <div className="footer-logo">AtlasGDP</div>
-        </div>
-        <div className="footer-right">
-          <div className="footer-labels">
-            <div className="footer-label-content">
-              <Link href="/about" className="footer-link">
-                About Us
-              </Link>
-              <Link href="/predictor" className="footer-link">
-                Predictor Tool
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </>
   );
 }

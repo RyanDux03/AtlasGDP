@@ -7,10 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "upload-predictions": "tsx scripts/upload-predictions.ts"
+    "upload-predictions": "tsx scripts/upload-predictions.ts",
+    "upload-historical": "tsx scripts/upload-historical-data.ts",
+    "upload-indicators": "tsx scripts/upload-indicators.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.86.0",
+    "dotenv": "^17.2.3",
     "next": "16.0.3",
     "react": "19.2.0",
     "react-dom": "19.2.0",

@@ -1,134 +1,191 @@
 import { createClient } from '@supabase/supabase-js';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as dotenv from 'dotenv';
 
-// Load environment variables
-const envPath = path.join(__dirname, '../.env.local');
-const envContent = fs.readFileSync(envPath, 'utf-8');
-const envLines = envContent.split('\n');
-let supabaseUrl = '';
-let supabaseAnonKey = '';
+// Load environment variables from .env.local
+dotenv.config({ path: path.join(__dirname, '../.env.local') });
 
-for (const line of envLines) {
-  if (line.startsWith('NEXT_PUBLIC_SUPABASE_URL=')) {
-    supabaseUrl = line.split('=')[1].replace(/"/g, '');
-  }
-  if (line.startsWith('NEXT_PUBLIC_SUPABASE_ANON_KEY=')) {
-    supabaseAnonKey = line.split('=')[1].replace(/"/g, '');
-  }
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing Supabase environment variables');
+  process.exit(1);
 }
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// Country mapping
+const countryMapping: { [key: string]: string } = {
+  'CHN': 'China',
+  'DEU': 'Germany',
+  'IND': 'India',
+  'ARE': 'United Arab Emirates',
+  'USA': 'USA'
+};
+
+// Model mapping to table names
+const modelMapping: { [key: string]: string } = {
+  'lr_predictions.csv': 'predictions_lr',
+  'rf_predictions.csv': 'predictions_rf',
+  'hybrid_predictions.csv': 'predictions_hybrid'
+};
+
 interface PredictionRow {
   country: string;
-  year: number;
-  actual_gdp: number | null;
-  predicted_gdp: number | null;
-  is_test: number;
-  is_forecast: number;
+  year: string;
+  actual_gdp: string;
+  predicted_gdp: string;
+  is_test: string;
+  is_forecast: string;
 }
 
-async function parseCsv(filePath: string): Promise<PredictionRow[]> {
-  const content = fs.readFileSync(filePath, 'utf-8');
+function parseCSV(content: string): PredictionRow[] {
   const lines = content.trim().split('\n');
+  const headers = lines[0].split(',');
   
   return lines.slice(1).map(line => {
     const values = line.split(',');
-    return {
-      country: values[0],
-      year: parseInt(values[1]),
-      actual_gdp: values[2] ? parseFloat(values[2]) : null,
-      predicted_gdp: values[3] ? parseFloat(values[3]) : null,
-      is_test: parseInt(values[4]),
-      is_forecast: parseInt(values[5])
-    };
+    const row: Record<string, string> = {};
+    headers.forEach((header, index) => {
+      row[header.trim()] = values[index]?.trim() || '';
+    });
+    return row as unknown as PredictionRow;
   });
 }
 
+function parseValue(value: string): number | null {
+  if (!value || value === '' || value === 'NA' || value === 'NaN') {
+    return null;
+  }
+  const parsed = parseFloat(value);
+  return isNaN(parsed) ? null : parsed;
+}
+
 async function uploadPredictions() {
-  try {
-    console.log('Starting prediction data upload...');
+  console.log('Starting predictions upload...\n');
 
-    // Parse both CSV files
-    const predictions1 = await parseCsv(path.join(__dirname, '../../data/predictions_for_frontend.csv'));
-    const predictions2 = await parseCsv(path.join(__dirname, '../../data/USA_predictions_for_frontend.csv'));
-    
-    const allPredictions = [...predictions1, ...predictions2];
-    
-    console.log(`Total predictions to upload: ${allPredictions.length}`);
+  // First check what columns exist in predictions table
+  const { data: existingData, error: checkError } = await supabase
+    .from('predictions')
+    .select('*')
+    .limit(1);
 
-    // Get country mappings
-    const { data: countries, error: countryError } = await supabase
-      .from('countries')
-      .select('id, iso_code');
-    
-    if (countryError) {
-      console.error('Error fetching countries:', countryError);
-      return;
-    }
+  if (checkError) {
+    console.error('Error checking predictions table:', checkError);
+  } else {
+    console.log('Existing predictions table structure:', existingData);
+  }
 
-    const countryMap = new Map(countries.map(c => [c.iso_code, c.id]));
-    
-    // Map country codes from CSV to database iso_codes
-    const countryCodeMap: Record<string, string> = {
-      'IND': 'IND',
-      'DEU': 'DEU', 
-      'ARE': 'UAE',
-      'CHN': 'CHN',
-      'USA': 'USA'
-    };
+  const dataDir = path.join(__dirname, '../../data/prediction data');
+  const files = ['lr_predictions.csv', 'rf_predictions.csv', 'hybrid_predictions.csv'];
 
-    // Get GDP indicator ID
-    const { data: indicators, error: indicatorError } = await supabase
-      .from('indicators')
-      .select('id, code')
-      .eq('code', 'gdp');
-    
-    if (indicatorError || !indicators || indicators.length === 0) {
-      console.error('Error fetching GDP indicator:', indicatorError);
-      console.log('Indicators found:', indicators);
-      return;
-    }
+  // Get country IDs
+  const { data: countries, error: countriesError } = await supabase
+    .from('countries')
+    .select('id, name');
 
-    const gdpIndicatorId = indicators[0].id;
-    console.log(`GDP Indicator ID: ${gdpIndicatorId}`);
+  if (countriesError) {
+    console.error('Error fetching countries:', countriesError);
+    return;
+  }
+
+  console.log('Found countries:', countries);
+
+  // First, create indicator entries for the prediction models
+  const predictionIndicators = [
+    { id: 101, code: 'gdp_pred_lr', label: 'GDP Prediction (Linear Regression)', unit: 'USD (billions)' },
+    { id: 102, code: 'gdp_pred_rf', label: 'GDP Prediction (Random Forest)', unit: 'USD (billions)' },
+    { id: 103, code: 'gdp_pred_hybrid', label: 'GDP Prediction (Hybrid)', unit: 'USD (billions)' }
+  ];
+
+  console.log('\nCreating prediction indicator entries...');
+  const { error: indicatorError } = await supabase
+    .from('indicators')
+    .upsert(predictionIndicators, {
+      onConflict: 'id',
+      ignoreDuplicates: false
+    });
+
+  if (indicatorError) {
+    console.error('Error creating prediction indicators:', indicatorError);
+    return;
+  }
+  console.log('✓ Prediction indicators created');
+
+  // GDP indicator ID is 1
+  // We'll use indicator IDs 101, 102, 103 for predictions from different models
+  const indicatorMapping: { [key: string]: number } = {
+    'predictions_lr': 101,
+    'predictions_rf': 102,
+    'predictions_hybrid': 103
+  };
+
+  for (const file of files) {
+    const tableName = modelMapping[file];
+    const indicatorId = indicatorMapping[tableName];
+    
+    console.log(`\nProcessing ${file} -> indicator ${indicatorId}...`);
+
+    const filePath = path.join(dataDir, file);
+    const content = fs.readFileSync(filePath, 'utf-8');
+    const rows = parseCSV(content);
+
+    console.log(`Found ${rows.length} rows`);
 
     // Prepare prediction records
-    const predictionRecords = allPredictions.map(pred => {
-      const countryCode = countryCodeMap[pred.country] || pred.country;
-      const countryId = countryMap.get(countryCode);
+    const predictionRecords: Array<{
+      country_id: number;
+      indicator_id: number;
+      year: number;
+      predicted_value: number;
+    }> = [];
+
+    for (const row of rows) {
+      const countryCode = row.country;
+      const countryName = countryMapping[countryCode];
       
-      if (!countryId) {
-        console.warn(`Country not found: ${pred.country} (${countryCode})`);
-        return null;
+      if (!countryName) {
+        console.warn(`Unknown country code: ${countryCode}`);
+        continue;
       }
 
-      return {
-        country_id: countryId,
-        indicator_id: gdpIndicatorId,
-        year: pred.year,
-        actual_value: pred.actual_gdp,
-        predicted_value: pred.predicted_gdp,
-        is_test: pred.is_test === 1,
-        is_forecast: pred.is_forecast === 1
-      };
-    }).filter(Boolean);
+      const country = countries?.find(c => c.name === countryName);
+      if (!country) {
+        console.warn(`Country not found for ${countryCode}`);
+        continue;
+      }
 
-    console.log(`Prepared ${predictionRecords.length} prediction records`);
+      const year = parseInt(row.year);
+      const predictedValue = parseValue(row.predicted_gdp);
 
-    // Insert in batches
-    const batchSize = 100;
+      if (isNaN(year) || predictedValue === null) {
+        continue;
+      }
+
+      predictionRecords.push({
+        country_id: country.id,
+        indicator_id: indicatorId,
+        year: year,
+        predicted_value: predictedValue
+      });
+    }
+
+    console.log(`Uploading ${predictionRecords.length} prediction records...`);
+
+    // Upload in batches
+    const batchSize = 1000;
     for (let i = 0; i < predictionRecords.length; i += batchSize) {
       const batch = predictionRecords.slice(i, i + batchSize);
       
       const { error } = await supabase
         .from('predictions')
-        .upsert(batch, { 
+        .upsert(batch, {
           onConflict: 'country_id,indicator_id,year',
-          ignoreDuplicates: false 
+          ignoreDuplicates: false
         });
-      
+
       if (error) {
         console.error(`Error uploading batch ${i / batchSize + 1}:`, error);
       } else {
@@ -136,10 +193,10 @@ async function uploadPredictions() {
       }
     }
 
-    console.log('Upload complete!');
-  } catch (error) {
-    console.error('Upload failed:', error);
+    console.log(`✓ Completed ${tableName}`);
   }
+
+  console.log('\n✓ All predictions uploaded successfully!');
 }
 
-uploadPredictions();
+uploadPredictions().catch(console.error);
