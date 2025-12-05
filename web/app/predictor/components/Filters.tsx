@@ -5,8 +5,6 @@ import React, { useEffect, useRef } from "react";
 interface FiltersProps {
   openDropdown: string | null;
   setOpenDropdown: (name: string | null) => void;
-  selectedGdpType: string | null;
-  setSelectedGdpType: (type: string | null) => void;
   selectedCountry: string;
   setSelectedCountry: (country: string) => void;
   selectedComposition: string | null;
@@ -18,13 +16,12 @@ interface FiltersProps {
   selectedModels: string[];
   setSelectedModels: (models: string[]) => void;
   onCountryChange: (isoCode: string) => void;
+  onReset: () => void;
 }
 
 const Filters = React.memo(({
   openDropdown,
   setOpenDropdown,
-  selectedGdpType,
-  setSelectedGdpType,
   selectedCountry,
   setSelectedCountry,
   selectedComposition,
@@ -36,10 +33,10 @@ const Filters = React.memo(({
   selectedModels,
   setSelectedModels,
   onCountryChange,
+  onReset,
 }: FiltersProps) => {
-  const gdpTypes = ["Overall GDP", "GDP Growth Rate"];
   const countriesList = ["USA", "China", "Germany", "India", "UAE"];
-  const compositionList = ["All", "Consumer Spending", "Investment", "Government Spending", "Net Exports"];
+  const compositionList = ["All", "Consumer Spending", "Investment", "Government Spending"];
   const indicatorsList = [
     "Political Instability",
     "Energy Consumption",
@@ -98,34 +95,6 @@ const Filters = React.memo(({
   return (
     <section className="predictor-filters">
       <div className="predictor-filters-container" ref={filtersRef}>
-        {/* GDP Types Dropdown */}
-        <div className="predictor-dropdown-wrapper">
-          <div className="predictor-dropdown" onClick={() => toggleDropdown("gdpTypes")}>
-            <span className="dropdown-label">{selectedGdpType || "GDP Type"}</span>
-            <span className="dropdown-arrow">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
-                <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
-              </svg>
-            </span>
-          </div>
-          {openDropdown === "gdpTypes" && (
-            <div className="dropdown-menu">
-              {gdpTypes.map((type) => (
-                <div
-                  key={type}
-                  className={`dropdown-item ${selectedGdpType === type ? "selected" : ""}`}
-                  onClick={() => {
-                    setSelectedGdpType(type);
-                    setOpenDropdown(null);
-                  }}
-                >
-                  {type}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
         {/* Countries Dropdown */}
         <div className="predictor-dropdown-wrapper">
           <div className="predictor-dropdown" onClick={() => toggleDropdown("countries")}>
@@ -280,6 +249,13 @@ const Filters = React.memo(({
               ))}
             </div>
           )}
+        </div>
+
+        {/* Reset Button */}
+        <div className="predictor-dropdown-wrapper">
+          <div className="predictor-dropdown reset-button" onClick={onReset}>
+            <span className="dropdown-label">RESET</span>
+          </div>
         </div>
       </div>
     </section>

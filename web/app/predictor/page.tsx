@@ -7,6 +7,7 @@ import type { Indicator } from "@/data/indicators";
 import GDPChart from "./components/GDPChart";
 import IndicatorsTable from "./components/IndicatorsTable";
 import Filters from "./components/Filters";
+import ModelAccuracyCards from "./components/ModelAccuracyCards";
 
 export default function PredictorPage() {
     type Country = {
@@ -62,11 +63,10 @@ export default function PredictorPage() {
   
   // Map composition display names to indicator codes
   const compositionCodeMap = useMemo<Record<string, string[]>>(() => ({
-    "All": ["household_consumption", "govt_consumption", "investment", "net_exports"],
+    "All": ["household_consumption", "govt_consumption", "investment"],
     "Consumer Spending": ["household_consumption"],
     "Investment": ["investment"],
-    "Government Spending": ["govt_consumption"],
-    "Net Exports": ["net_exports"]
+    "Government Spending": ["govt_consumption"]
   }), []);
 
   // Load countries + indicators once
@@ -325,8 +325,6 @@ export default function PredictorPage() {
         <Filters
           openDropdown={openDropdown}
           setOpenDropdown={setOpenDropdown}
-          selectedGdpType={selectedGdpType}
-          setSelectedGdpType={setSelectedGdpType}
           selectedCountry={selectedCountry}
           setSelectedCountry={setSelectedCountry}
           selectedComposition={selectedComposition}
@@ -341,6 +339,19 @@ export default function PredictorPage() {
             const country = countries.find((c) => c.iso_code === isoCode);
             if (country) {
               setSelectedCountryId(country.id);
+            }
+          }}
+          onReset={() => {
+            setSelectedCountry("USA");
+            setSelectedComposition(null);
+            setSelectedIndicators([]);
+            setSelectedTimeFrame(null);
+            setSelectedModels([]);
+            setOpenDropdown(null);
+            // Reset to USA country ID
+            const usaCountry = countries.find((c) => c.iso_code === "USA");
+            if (usaCountry) {
+              setSelectedCountryId(usaCountry.id);
             }
           }}
         />
@@ -381,6 +392,13 @@ export default function PredictorPage() {
         <section className="gdp-subsection" style={{ marginTop: "3rem" }}>
           <div className="gdp-subsection-rectangle">
             <h1 className="gdp-predictor-title">Understanding Your Graph</h1>
+          </div>
+        </section>
+
+        {/* Model Accuracy Cards */}
+        <section className="section" style={{ paddingTop: "1rem" }}>
+          <div className="container">
+            <ModelAccuracyCards selectedCountry={selectedCountry} />
           </div>
         </section>
 

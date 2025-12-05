@@ -299,17 +299,15 @@ export default function HomePage() {
           <div className="container">
             <h2 className="section-title">Supported Countries</h2>
             <p className="section-subtitle">
-              Our predictor tool currently supports 5 different countries with
-              varying economies to give a wide range of insights on the world’s
-              wealth.
-              <br />
-              <br/ >
-                 How do we select these countries? <br />
-              USA - Large Developed Economy<br />
-              China - Rapidly Growing Economy<br />
-              India - Emerging Market with High Growth Potential<br />
-              Germany - Stable European Economy<br />
-              UAE - Wealthy Economy with Unique Dynamics
+              Our predictor tool currently supports five countries, carefully selected to help you understand a diverse range of economic conditions and gain broad insights into global wealth. 
+              <br/> <br/>
+              Each country represents a distinct position in the global economy: the United States, with its large, mature, and highly developed economy, serves as a benchmark for long-term stability and innovation-driven growth. 
+              China showcases the impact of rapid industrial expansion and global economic influence, offering a look into fast-paced market evolution. 
+              India, as an emerging market with immense growth potential, highlights the dynamics of population-driven development and expanding industries. 
+              Germany provides a model of a stable European economy, known for strong manufacturing, fiscal discipline, and resilient market structures. 
+              Finally, the United Arab Emirates represents a wealthy, resource-rich economy with unique dynamics shaped by diversification efforts and strategic global positioning. 
+              <br/> <br/>
+              Together, these countries offer a comprehensive and well-rounded foundation for exploring how wealth is created, sustained, and transformed across different economic landscapes.
             </p>
 
             <div className="map">
