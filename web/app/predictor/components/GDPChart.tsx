@@ -1,6 +1,7 @@
 // app/predictor/GDPChart.tsx
 "use client";
 
+import React from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -23,7 +24,7 @@ interface GDPChartProps {
   indicatorCodeMap: Record<string, string>;
 }
 
-export default function GDPChart({
+const GDPChart = React.memo(({
   combinedChartData,
   loading,
   selectedCountry,
@@ -33,7 +34,7 @@ export default function GDPChart({
   selectedModels,
   compositionCodeMap,
   indicatorCodeMap,
-}: GDPChartProps) {
+}: GDPChartProps) => {
   return (
     <div
       style={{ 
@@ -324,4 +325,8 @@ export default function GDPChart({
       </div>
     </div>
   );
-}
+});
+
+GDPChart.displayName = 'GDPChart';
+
+export default GDPChart;

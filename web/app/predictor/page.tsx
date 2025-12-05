@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { indicators as indicatorsData } from "@/data/indicators";
 import type { Indicator } from "@/data/indicators";
@@ -36,7 +36,7 @@ export default function PredictorPage() {
 
   const [countries, setCountries] = useState<Country[]>([]);
   const [selectedCountryId, setSelectedCountryId] = useState<number | null>(
-    null
+    1 // Default to first country (USA) for faster initial load
   );
   const [timeSeries, setTimeSeries] = useState<TimeSeriesRow[]>([]);
   const [predictions, setPredictions] = useState<PredictionRow[]>([]);
@@ -74,33 +74,45 @@ export default function PredictorPage() {
     const loadMeta = async () => {
       setErrorMsg(null);
 
-      const [{ data: countryData, error: countryErr }] =
-        await Promise.all([
-          supabase.from("countries").select("*").order("name"),
-        ]);
+      // Simplified - no need for Promise.all with single query
+      const { data: countryData, error: countryErr } = await supabase
+        .from("countries")
+        .select("*")
+        .order("name");
 
-     if (countryErr) {
-  console.error("countriesErr:", countryErr);
-  setErrorMsg(
-    countryErr?.message || "Failed to load metadata from database."
-  );
-  return;
-}
-
+      if (countryErr) {
+        console.error("countriesErr:", countryErr);
+        setErrorMsg(
+          countryErr?.message || "Failed to load metadata from database."
+        );
+        return;
+      }
 
       setCountries(countryData || []);
-
-      if (countryData && countryData.length > 0) {
+      
+      // Only update if not already set (preserves default)
+      if (countryData && countryData.length > 0 && !selectedCountryId) {
         setSelectedCountryId(countryData[0].id);
       }
     };
 
     loadMeta();
-  }, []);
+  }, [selectedCountryId]);
+
+  // Cache to prevent redundant data fetches
+  const dataCache = useRef<Map<number, { timeSeries: TimeSeriesRow[], predictions: PredictionRow[] }>>(new Map());
 
   // Load time_series and predictions when country changes
   useEffect(() => {
     if (!selectedCountryId) return;
+
+    // Check cache first
+    const cached = dataCache.current.get(selectedCountryId);
+    if (cached) {
+      setTimeSeries(cached.timeSeries);
+      setPredictions(cached.predictions);
+      return;
+    }
 
     const loadData = async () => {
       setLoading(true);
@@ -126,14 +138,20 @@ export default function PredictorPage() {
         setErrorMsg("Failed to load time series data.");
         setTimeSeries([]);
       } else {
-        setTimeSeries(timeSeriesResult.data || []);
+        const tsData = timeSeriesResult.data || [];
+        setTimeSeries(tsData);
+        
+        // Cache the results
+        const predData = predictionsResult.data || [];
+        setPredictions(predData);
+        dataCache.current.set(selectedCountryId, { 
+          timeSeries: tsData, 
+          predictions: predData 
+        });
       }
 
       if (predictionsResult.error) {
         console.error(predictionsResult.error);
-        setPredictions([]);
-      } else {
-        setPredictions(predictionsResult.data || []);
       }
     };
 
@@ -165,35 +183,40 @@ export default function PredictorPage() {
     const selectedCodes = selectedIndicators.map(name => indicatorCodeMap[name]);
     const selectedIndicatorObjs = indicatorsData.filter(ind => selectedCodes.includes(ind.code));
 
+    // Pre-create a Set of all relevant indicator IDs for faster lookup
+    const relevantIndicatorIds = new Set([
+      primaryGdpIndicatorId,
+      ...compositionIndicatorObjs.map(i => i.id),
+      ...selectedIndicatorObjs.map(i => i.id)
+    ]);
+
     // Group all data by year
     const yearMap: Record<number, Record<string, number>> = {};
 
+    // Single optimized loop with early filtering
     for (const row of timeSeries) {
-      if (row.value == null) continue;
+      if (row.value == null || !relevantIndicatorIds.has(row.indicator_id)) continue;
 
-      // Add primary GDP data (overall or growth)
+      if (!yearMap[row.year]) {
+        yearMap[row.year] = { year: row.year } as Record<string, number>;
+      }
+
+      // Add primary GDP data
       if (row.indicator_id === primaryGdpIndicatorId) {
-        if (!yearMap[row.year]) {
-          yearMap[row.year] = { year: row.year } as Record<string, number>;
-        }
         yearMap[row.year][primaryGdpCode] = row.value;
+        continue;
       }
 
       // Add composition data
       const compInd = compositionIndicatorObjs.find(i => i.id === row.indicator_id);
       if (compInd) {
-        if (!yearMap[row.year]) {
-          yearMap[row.year] = { year: row.year } as Record<string, number>;
-        }
         yearMap[row.year][compInd.code] = row.value;
+        continue;
       }
 
       // Add selected indicator data
       const ind = selectedIndicatorObjs.find(i => i.id === row.indicator_id);
       if (ind) {
-        if (!yearMap[row.year]) {
-          yearMap[row.year] = { year: row.year } as Record<string, number>;
-        }
         yearMap[row.year][ind.code] = row.value;
       }
     }

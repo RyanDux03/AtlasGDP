@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 interface FiltersProps {
   openDropdown: string | null;
@@ -20,7 +20,7 @@ interface FiltersProps {
   onCountryChange: (isoCode: string) => void;
 }
 
-export default function Filters({
+const Filters = React.memo(({
   openDropdown,
   setOpenDropdown,
   selectedGdpType,
@@ -36,7 +36,7 @@ export default function Filters({
   selectedModels,
   setSelectedModels,
   onCountryChange,
-}: FiltersProps) {
+}: FiltersProps) => {
   const gdpTypes = ["Overall GDP", "GDP Growth Rate"];
   const countriesList = ["USA", "China", "Germany", "India", "UAE"];
   const compositionList = ["All", "Consumer Spending", "Investment", "Government Spending", "Net Exports"];
@@ -284,4 +284,8 @@ export default function Filters({
       </div>
     </section>
   );
-}
+});
+
+Filters.displayName = 'Filters';
+
+export default Filters;

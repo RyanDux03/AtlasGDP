@@ -1,7 +1,7 @@
 // app/predictor/IndicatorsTable.tsx
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { indicators as indicatorsData } from "@/data/indicators";
 
 interface IndicatorsTableProps {
@@ -12,10 +12,10 @@ interface IndicatorsTableProps {
   }>;
 }
 
-export default function IndicatorsTable({
+const IndicatorsTable = React.memo(({
   selectedCountry,
   indicatorTableData,
-}: IndicatorsTableProps) {
+}: IndicatorsTableProps) => {
   const [hoveredIndicator, setHoveredIndicator] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number } | null>(null);
 
@@ -238,4 +238,8 @@ export default function IndicatorsTable({
       </div>
     </section>
   );
-}
+});
+
+IndicatorsTable.displayName = 'IndicatorsTable';
+
+export default IndicatorsTable;
