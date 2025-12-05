@@ -17,19 +17,19 @@ const countryToIso: Record<string, string> = {
 
 // R² accuracies by model and country ISO code
 const rfAccuracies: Record<string, number> = {
-  "ARE": 0.9781693337656295,
-  "CHN": 0.9755988477797881,
-  "DEU": 0.9478985281909994,
-  "IND": 0.9954869633424748,
-  "USA": 0.9499214545032679
+  "ARE": 0.967343649933759,
+  "CHN": 0.9554461185372651,
+  "DEU": 0.979967184446301,
+  "IND": 0.9630735896828855,
+  "USA": 0.9731906377679994
 };
 
 const hybridAccuracies: Record<string, number> = {
-  "ARE": 0.8995774717196613,
-  "CHN": 0.9826323806471884,
-  "DEU": 0.9452250599515106,
-  "IND": 0.9847962695582878,
-  "USA": 0.9772300283674417
+  "ARE": 0.9916400784411488,
+  "CHN": 0.6925342935435479,
+  "DEU": 0.9422555862878881,
+  "IND": 0.9124693477535333,
+  "USA": 0.9435587262747313
 };
 
 function ModelCard({ 

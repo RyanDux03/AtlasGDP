@@ -55,10 +55,12 @@ export default function PredictorPage() {
   
   // Map display names to indicator codes
   const indicatorCodeMap = useMemo<Record<string, string>>(() => ({
-    "Political Instability": "political_stability",
-    "Energy Consumption": "energy_use",
-    "Tourist Arrivals": "tourism_arrivals",
-    "Tourist Departures": "tourism_departures"
+    "Political Stability": "political_stability",
+    "Energy Use": "energy_use",
+    "Birth Rate": "birth_rate",
+    "Literacy Rate": "literacy_rate",
+    "Population": "population",
+    "Foreign Direct Investment (FDI)": "fdi"
   }), []);
   
   // Map composition display names to indicator codes

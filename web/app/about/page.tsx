@@ -18,16 +18,11 @@ const challenges = [
   },
   {
     id: 3,
-    title: "Complex Feature Selection",
-    description: "Choosing indicators like political instability, environmental factors, population, FDI, and literacy rate required justification and experimentation to ensure they contributed meaningful predictive value."
-  },
-  {
-    id: 4,
     title: "Integration Between Systems",
     description: "Coordinating backend models, database structures, and the user interface required tight communication between subteams. Ensuring the dashboard responded quickly and accurately was a core challenge."
   },
   {
-    id: 5,
+    id: 4,
     title: "Team Coordination & Time Management",
     description: "With multiple subgroups (frontend, backend/ML, database), staying aligned through weekly meetings, progress check-ins, and risk planning was essential to keep the project on schedule."
   }

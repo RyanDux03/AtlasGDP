@@ -38,10 +38,12 @@ const Filters = React.memo(({
   const countriesList = ["USA", "China", "Germany", "India", "UAE"];
   const compositionList = ["All", "Consumer Spending", "Investment", "Government Spending"];
   const indicatorsList = [
-    "Political Instability",
-    "Energy Consumption",
-    "Tourist Arrivals",
-    "Tourist Departures"
+    "Political Stability",
+    "Energy Use",
+    "Birth Rate",
+    "Literacy Rate",
+    "Population",
+    "Foreign Direct Investment (FDI)"
   ];
   const timeFrames = ["All Time", "Last 5 Years", "Last 10 Years", "Last 15 Years"];
   const models = ["Linear Regression", "Random Forest", "Hybrid Model"];

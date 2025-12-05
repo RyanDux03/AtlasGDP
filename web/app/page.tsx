@@ -332,7 +332,7 @@ export default function HomePage() {
             }}>
               <IndicatorGroup 
                 title="Non-Traditional Indicators" 
-                codes={["birth_rate", "literacy_rate", "population", "tourism_arrivals", "tourism_departures", "political_stability", "energy_use"]} 
+                codes={["birth_rate", "literacy_rate", "population", "political_stability", "energy_use"]} 
               />
               <IndicatorGroup 
                 title="Traditional Indicators" 
