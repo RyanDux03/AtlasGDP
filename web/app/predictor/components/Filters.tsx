@@ -17,6 +17,7 @@ interface FiltersProps {
   setSelectedModels: (models: string[]) => void;
   onCountryChange: (isoCode: string) => void;
   onReset: () => void;
+  onExportGraph: () => void;
 }
 
 const Filters = React.memo(({
@@ -34,6 +35,7 @@ const Filters = React.memo(({
   setSelectedModels,
   onCountryChange,
   onReset,
+  onExportGraph,
 }: FiltersProps) => {
   const countriesList = ["USA", "China", "Germany", "India", "UAE"];
   const compositionList = ["All", "Consumer Spending", "Investment", "Government Spending"];
@@ -257,6 +259,13 @@ const Filters = React.memo(({
         <div className="predictor-dropdown-wrapper">
           <div className="predictor-dropdown reset-button" onClick={onReset}>
             <span className="dropdown-label">RESET</span>
+          </div>
+        </div>
+
+        {/* Export Graph Button */}
+        <div className="predictor-dropdown-wrapper">
+          <div className="predictor-dropdown reset-button" onClick={onExportGraph}>
+            <span className="dropdown-label">EXPORT GRAPH</span>
           </div>
         </div>
       </div>

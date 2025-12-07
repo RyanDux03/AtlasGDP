@@ -1,7 +1,7 @@
 // app/predictor/IndicatorsTable.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { indicators as indicatorsData } from "@/data/indicators";
 
 interface IndicatorsTableProps {
@@ -24,12 +24,68 @@ const IndicatorsTable = React.memo(({
     ["gdp", "birth_rate", "literacy_rate", "population", "tourism_arrivals", "tourism_departures", "political_stability", "energy_use"].includes(ind.code)
   );
 
+  // Export table data as CSV
+  const handleExportCSV = useCallback(() => {
+    if (indicatorTableData.length === 0) return;
+
+    // Build CSV header
+    const headers = ["Year", ...displayedIndicators.map(ind => ind.label + (ind.unit ? ` (${ind.unit})` : ""))];
+    
+    // Build CSV rows
+    const rows = indicatorTableData.map(row => {
+      const values = [row.year.toString()];
+      displayedIndicators.forEach(ind => {
+        const value = row.values[ind.code];
+        values.push(value != null ? value.toString() : "");
+      });
+      return values;
+    });
+
+    // Combine into CSV string
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.join(","))
+    ].join("\n");
+
+    // Create and download file
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${selectedCountry}_indicators.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, [indicatorTableData, displayedIndicators, selectedCountry]);
+
   return (
     <section className="section" style={{ paddingTop: "2rem", paddingBottom: "3rem" }}>
       <div className="container">
-        <h3 className="section-title" style={{ fontSize: "36px", color: "#2E5A7F", marginBottom: "1.5rem" }}>
-          Indicators per Year – {selectedCountry}
-        </h3>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+          <h3 className="section-title" style={{ fontSize: "36px", color: "#2E5A7F", marginBottom: "0" }}>
+            Indicators per Year – {selectedCountry}
+          </h3>
+          <button
+            onClick={handleExportCSV}
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#2E5A7F",
+              color: "white",
+              border: "none",
+              borderRadius: "15px",
+              fontSize: "14px",
+              fontWeight: 700,
+              cursor: "pointer",
+              textTransform: "uppercase",
+              transition: "background-color 0.2s ease"
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#1e3a5f")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#2E5A7F")}
+          >
+            Export CSV
+          </button>
+        </div>
         <p style={{ fontSize: "1rem", color: "#64748b", marginBottom: "1.5rem" }}>
           Hover over column headers to see indicator definitions
         </p>

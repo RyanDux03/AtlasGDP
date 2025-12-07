@@ -1,7 +1,7 @@
 // app/predictor/GDPChart.tsx
 "use client";
 
-import React from "react";
+import React, { forwardRef } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -24,7 +24,7 @@ interface GDPChartProps {
   indicatorCodeMap: Record<string, string>;
 }
 
-const GDPChart = React.memo(({
+const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
   combinedChartData,
   loading,
   selectedCountry,
@@ -34,13 +34,16 @@ const GDPChart = React.memo(({
   selectedModels,
   compositionCodeMap,
   indicatorCodeMap,
-}: GDPChartProps) => {
+}, ref) => {
   return (
     <div
+      ref={ref}
       style={{ 
         width: "100%",
         maxWidth: "1400px",
-        margin: "2rem auto"
+        margin: "2rem auto",
+        backgroundColor: "white",
+        padding: "20px"
       }}
     >
       <h3 style={{ 
@@ -233,12 +236,16 @@ const GDPChart = React.memo(({
           
           {/* Inline Legend */}
           <div style={{ 
-            display: 'flex', 
-            flexWrap: 'wrap', 
-            gap: '20px', 
-            justifyContent: 'center',
+            width: '100%',
+            textAlign: 'center',
             marginTop: '15px'
           }}>
+            <div style={{ 
+              display: 'inline-flex', 
+              flexWrap: 'wrap', 
+              gap: '20px', 
+              justifyContent: 'center'
+            }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div style={{ 
                 width: '30px', 
@@ -319,6 +326,7 @@ const GDPChart = React.memo(({
                 </div>
               );
             })}
+            </div>
           </div>
         </>
       )}

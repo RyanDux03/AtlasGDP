@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { indicators as indicatorsData } from "@/data/indicators";
 import type { Indicator } from "@/data/indicators";
@@ -43,6 +43,9 @@ export default function PredictorPage() {
   const [predictions, setPredictions] = useState<PredictionRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Chart ref for export
+  const chartRef = useRef<HTMLDivElement>(null);
 
   // Dropdown states
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -356,6 +359,30 @@ export default function PredictorPage() {
               setSelectedCountryId(usaCountry.id);
             }
           }}
+          onExportGraph={async () => {
+            if (!chartRef.current) return;
+            try {
+              const html2canvas = (await import("html2canvas")).default;
+              const canvas = await html2canvas(chartRef.current, {
+                backgroundColor: "#ffffff",
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                windowWidth: chartRef.current.scrollWidth,
+                windowHeight: chartRef.current.scrollHeight,
+                width: chartRef.current.scrollWidth,
+                height: chartRef.current.scrollHeight,
+                scrollX: 0,
+                scrollY: 0,
+              });
+              const link = document.createElement("a");
+              link.download = `${selectedCountry}_gdp_chart.png`;
+              link.href = canvas.toDataURL("image/png");
+              link.click();
+            } catch (error) {
+              console.error("Error exporting chart:", error);
+            }
+          }}
         />
 
         <section className="section" style={{ paddingTop: "1rem" }}>
@@ -375,6 +402,7 @@ export default function PredictorPage() {
 
               {/* Combined GDP and Indicators Chart */}
               <GDPChart
+                ref={chartRef}
                 combinedChartData={combinedChartData}
                 selectedCountry={selectedCountry}
                 selectedGdpType={selectedGdpType}
