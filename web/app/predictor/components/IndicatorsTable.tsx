@@ -21,7 +21,7 @@ const IndicatorsTable = React.memo(({
 
   // Filter to show only GDP and non-traditional indicators
   const displayedIndicators = indicatorsData.filter(ind => 
-    ["gdp", "birth_rate", "literacy_rate", "population", "tourism_arrivals", "tourism_departures", "political_stability", "energy_use"].includes(ind.code)
+    ["gdp", "birth_rate", "literacy_rate", "population", "political_stability", "energy_use", "fdi"].includes(ind.code)
   );
 
   // Export table data as CSV

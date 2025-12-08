@@ -25,6 +25,11 @@ const challenges = [
     id: 4,
     title: "Team Coordination & Time Management",
     description: "With multiple subgroups (frontend, backend/ML, database), staying aligned through weekly meetings, progress check-ins, and risk planning was essential to keep the project on schedule."
+  },
+  {
+    id: 5,
+    title: "User Experience Design",
+    description: "Designing an intuitive interface that effectively visualized complex data required multiple iterations and user feedback sessions to refine usability and aesthetics."
   }
 ];
 
@@ -160,7 +165,7 @@ export default function AboutPage() {
               <li>Assess factor-specific impacts such as literacy rate, foreign direct investment, political instability, population, and more</li>
             </ul>
             <p className="about-paragraph">
-              The platform uses two models, Linear Regression and Random Forest, to generate accurate, data-driven predictions. By focusing on transparency and usability, Atlas GDP provides a valuable resource for policymakers, researchers, educators, economists, investors, and students.
+              The platform uses three models, Linear Regression, Random Forest, and a Hybrid model, to generate accurate, data-driven predictions. By focusing on transparency and usability, Atlas GDP provides a valuable resource for policymakers, researchers, educators, economists, investors, and students.
             </p>
           </div>
         </section>

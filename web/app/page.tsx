@@ -267,6 +267,43 @@ function IndicatorCard({ indicator, index, isExpanded }: {
   );
 }
 
+function ModelCard({ title, description }: { title: string; description: string }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div 
+      style={{
+        padding: "1.5rem",
+        backgroundColor: "#f8fafc",
+        borderRadius: "12px",
+        border: "1px solid #e2e8f0",
+        transition: "all 0.3s ease",
+        transform: isHovered ? "translateY(-4px)" : "translateY(0)",
+        boxShadow: isHovered ? "0 8px 16px rgba(0, 0, 0, 0.1)" : "0 2px 4px rgba(0, 0, 0, 0.05)",
+        cursor: "default"
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <h3 style={{
+        fontSize: "1.25rem",
+        fontWeight: 700,
+        color: "#2E5A7F",
+        marginBottom: "1rem"
+      }}>
+        {title}
+      </h3>
+      <p style={{
+        fontSize: "0.95rem",
+        lineHeight: "1.6",
+        color: "#64748b"
+      }}>
+        {description}
+      </p>
+    </div>
+  );
+}
+
 export default function HomePage() {
   return (
     <>
@@ -352,6 +389,26 @@ export default function HomePage() {
               forest, and a hybrid model to guide our prediction. You can select between each
               model to get a varying look on our forecast for the future GDP.
             </p>
+
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: "1.5rem",
+              marginTop: "2rem"
+            }}>
+              <ModelCard 
+                title="Linear Regression"
+                description="A foundational statistical approach that models the relationship between GDP and economic indicators by fitting a straight line to historical data. It assumes a linear relationship between variables, making it simple to interpret and fast to compute. Best suited for identifying general trends and establishing baseline predictions."
+              />
+              <ModelCard 
+                title="Random Forest"
+                description="An ensemble machine learning method that builds multiple decision trees and combines their predictions for more accurate results. It excels at capturing complex, non-linear relationships between economic indicators and GDP. Highly resistant to overfitting and capable of handling diverse data patterns across different economies."
+              />
+              <ModelCard 
+                title="Hybrid Model"
+                description="Combines the strengths of multiple modeling approaches to leverage their individual advantages. By blending linear regression's interpretability with random forest's ability to capture complexity, the hybrid model provides balanced, robust GDP forecasts that perform consistently across various economic scenarios."
+              />
+            </div>
           </div>
         </section>
       </main>
