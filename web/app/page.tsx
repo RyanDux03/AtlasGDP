@@ -2,21 +2,20 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { indicators } from "@/data/indicators";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 function WorldMap() {
   const [svgContent, setSvgContent] = useState<string>("");
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
 
-  const supportedCountries: Record<string, { name: string; color: string }> = {
+  const supportedCountries: Record<string, { name: string; color: string }> = useMemo(() => ({
     'US': { name: 'United States', color: '#3e7ebb' },
     'CN': { name: 'China', color: '#e14d42' },
     'IN': { name: 'India', color: '#73b67b' },
     'DE': { name: 'Germany', color: '#dcb958' },
     'AE': { name: 'United Arab Emirates', color: '#b37bb2' }
-  };
+  }), []);
 
   useEffect(() => {
     fetch('/world.svg')
@@ -40,7 +39,7 @@ function WorldMap() {
         
         setSvgContent(modifiedSvg);
       });
-  }, []);
+  }, [supportedCountries]);
 
   const handleMouseOver = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -268,36 +267,46 @@ function IndicatorCard({ indicator, index, isExpanded }: {
   );
 }
 
+function ModelCard({ title, description }: { title: string; description: string }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div 
+      style={{
+        padding: "1.5rem",
+        backgroundColor: "#f8fafc",
+        borderRadius: "12px",
+        border: "1px solid #e2e8f0",
+        transition: "all 0.3s ease",
+        transform: isHovered ? "translateY(-4px)" : "translateY(0)",
+        boxShadow: isHovered ? "0 8px 16px rgba(0, 0, 0, 0.1)" : "0 2px 4px rgba(0, 0, 0, 0.05)",
+        cursor: "default"
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <h3 style={{
+        fontSize: "1.25rem",
+        fontWeight: 700,
+        color: "#2E5A7F",
+        marginBottom: "1rem"
+      }}>
+        {title}
+      </h3>
+      <p style={{
+        fontSize: "0.95rem",
+        lineHeight: "1.6",
+        color: "#64748b"
+      }}>
+        {description}
+      </p>
+    </div>
+  );
+}
+
 export default function HomePage() {
   return (
     <>
-
-      {/* Header / Navbar */}
-      <header className="site-header">
-        <div className="container header-inner">
-          <div className="logo">
-            <Link href="/">
-              <Image 
-                src="/atlas_logo.png"      
-                alt="AtlasGDP Logo" 
-                width={100}                
-                height={100}
-                priority                 
-              />
-            </Link>
-            <Link href="/" className="logo-text">AtlasGDP</Link>
-          </div>
-          <nav className="nav-links">
-            <Link href="/predictor" className="nav-link">
-              Predictor Tool
-            </Link>
-            <Link href="/about" className="nav-link">
-              About Us
-            </Link>
-          </nav>
-        </div>
-      </header>
-
       <main>
         {/* Hero */}
         <section className="hero">
@@ -327,9 +336,15 @@ export default function HomePage() {
           <div className="container">
             <h2 className="section-title">Supported Countries</h2>
             <p className="section-subtitle">
-              Our predictor tool currently supports 5 different countries with
-              varying economies to give a wide range of insights on the world’s
-              wealth.
+              Our predictor tool currently supports five countries, carefully selected to help you understand a diverse range of economic conditions and gain broad insights into global wealth. 
+              <br/> <br/>
+              Each country represents a distinct position in the global economy: the United States, with its large, mature, and highly developed economy, serves as a benchmark for long-term stability and innovation-driven growth. 
+              China showcases the impact of rapid industrial expansion and global economic influence, offering a look into fast-paced market evolution. 
+              India, as an emerging market with immense growth potential, highlights the dynamics of population-driven development and expanding industries. 
+              Germany provides a model of a stable European economy, known for strong manufacturing, fiscal discipline, and resilient market structures. 
+              Finally, the United Arab Emirates represents a wealthy, resource-rich economy with unique dynamics shaped by diversification efforts and strategic global positioning. 
+              <br/> <br/>
+              Together, these countries offer a comprehensive and well-rounded foundation for exploring how wealth is created, sustained, and transformed across different economic landscapes.
             </p>
 
             <div className="map">
@@ -343,8 +358,7 @@ export default function HomePage() {
           <div className="container">
             <h2 className="section-title">Indicators</h2>
             <p className="section-subtitle">
-              We know GDP is a generalizing number, so our team has narrowed
-              down a list of key economic indicators to help you understand the full picture:
+              Steering from traditional economic indicators, we incorporate a diverse set of non-traditional metrics (with traditional GDP as the base) to provide a holistic view of a country&apos;s economic health and growth potential.
             </p>
 
             <div style={{ 
@@ -354,28 +368,12 @@ export default function HomePage() {
               marginTop: "2rem"
             }}>
               <IndicatorGroup 
-                title="Economic Output" 
-                codes={["gdp", "gdp_growth", "net_exports"]} 
+                title="Non-Traditional Indicators" 
+                codes={["birth_rate", "literacy_rate", "population", "political_stability", "energy_use"]} 
               />
               <IndicatorGroup 
-                title="Demographics" 
-                codes={["population", "birth_rate", "literacy_rate"]} 
-              />
-              <IndicatorGroup 
-                title="Trade & Globalization" 
-                codes={["exports_pct_gdp", "imports_pct_gdp", "tourism_arrivals", "tourism_departures"]} 
-              />
-              <IndicatorGroup 
-                title="Investment & Spending" 
-                codes={["fdi", "household_consumption", "govt_consumption", "investment"]} 
-              />
-              <IndicatorGroup 
-                title="Governance & Stability" 
-                codes={["political_stability", "unemployment", "inflation"]} 
-              />
-              <IndicatorGroup 
-                title="Energy & Environment" 
-                codes={["energy_use"]} 
+                title="Traditional Indicators" 
+                codes={["gdp", "gdp_growth", "exports_pct_gdp", "imports_pct_gdp", "inflation", "unemployment", "fdi", "household_consumption", "govt_consumption", "investment", "net_exports"]} 
               />
             </div>
           </div>
@@ -387,32 +385,33 @@ export default function HomePage() {
             <h2 className="section-title">Prediction Models</h2>
             <p className="section-subtitle">
               Unlike other tools, we want to use current data and trends to see
-              where countries are going. We use a linear model and a random
-              forest model to guide our prediction. You can toggle between each
+              where countries are going. We use a linear model, a random
+              forest, and a hybrid model to guide our prediction. You can select between each
               model to get a varying look on our forecast for the future GDP.
             </p>
+
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: "1.5rem",
+              marginTop: "2rem"
+            }}>
+              <ModelCard 
+                title="Linear Regression"
+                description="A foundational statistical approach that models the relationship between GDP and economic indicators by fitting a straight line to historical data. It assumes a linear relationship between variables, making it simple to interpret and fast to compute. Best suited for identifying general trends and establishing baseline predictions."
+              />
+              <ModelCard 
+                title="Random Forest"
+                description="An ensemble machine learning method that builds multiple decision trees and combines their predictions for more accurate results. It excels at capturing complex, non-linear relationships between economic indicators and GDP. Highly resistant to overfitting and capable of handling diverse data patterns across different economies."
+              />
+              <ModelCard 
+                title="Hybrid Model"
+                description="Combines the strengths of multiple modeling approaches to leverage their individual advantages. By blending linear regression's interpretability with random forest's ability to capture complexity, the hybrid model provides balanced, robust GDP forecasts that perform consistently across various economic scenarios."
+              />
+            </div>
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="site-footer">
-        <div className="footer-left">
-          <div className="footer-logo">AtlasGDP</div>
-        </div>
-        <div className="footer-right">
-          <div className="footer-labels">
-            <div className="footer-label-content">
-              <Link href="/about" className="footer-link">
-                About Us
-              </Link>
-              <Link href="/predictor" className="footer-link">
-                Predictor Tool
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </>
   );
 }

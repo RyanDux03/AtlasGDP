@@ -387,6 +387,21 @@ p {
   border-radius: 8px;
 }
 
+.predictor-dropdown.reset-button {
+  background: #2E5A7F;
+  border-color: #2E5A7F;
+  justify-content: center;
+  min-width: 100px;
+}
+
+.predictor-dropdown.reset-button .dropdown-label {
+  color: #fff;
+}
+
+.predictor-dropdown.reset-button:hover {
+  background: #1e3a5f;
+}
+
 .dropdown-label {
   flex-shrink: 0;
   color: #2E5A7F;

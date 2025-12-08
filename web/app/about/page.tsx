@@ -18,18 +18,18 @@ const challenges = [
   },
   {
     id: 3,
-    title: "Complex Feature Selection",
-    description: "Choosing indicators like political instability, environmental factors, population, FDI, and literacy rate required justification and experimentation to ensure they contributed meaningful predictive value."
-  },
-  {
-    id: 4,
     title: "Integration Between Systems",
     description: "Coordinating backend models, database structures, and the user interface required tight communication between subteams. Ensuring the dashboard responded quickly and accurately was a core challenge."
   },
   {
-    id: 5,
+    id: 4,
     title: "Team Coordination & Time Management",
     description: "With multiple subgroups (frontend, backend/ML, database), staying aligned through weekly meetings, progress check-ins, and risk planning was essential to keep the project on schedule."
+  },
+  {
+    id: 5,
+    title: "User Experience Design",
+    description: "Designing an intuitive interface that effectively visualized complex data required multiple iterations and user feedback sessions to refine usability and aesthetics."
   }
 ];
 
@@ -101,32 +101,6 @@ function ChallengeDropdown({ challenge }: { challenge: typeof challenges[0] }) {
 export default function AboutPage() {
   return (
     <>
-      {/* Header / Navbar */}
-      <header className="site-header">
-        <div className="container header-inner">
-          <div className="logo">
-            <Link href="/">
-              <Image 
-                src="/atlas_logo.png"      
-                alt="AtlasGDP Logo" 
-                width={100}                
-                height={100}
-                priority                 
-              />
-            </Link>
-            <Link href="/" className="logo-text">AtlasGDP</Link>
-          </div>
-          <nav className="nav-links">
-            <Link href="/predictor" className="nav-link">
-              Predictor Tool
-            </Link>
-            <Link href="/about" className="nav-link">
-              About Us
-            </Link>
-          </nav>
-        </div>
-      </header>
-
       <main>
         {/* About Us Section */}
         <section className="gdp-subsection">
@@ -191,7 +165,7 @@ export default function AboutPage() {
               <li>Assess factor-specific impacts such as literacy rate, foreign direct investment, political instability, population, and more</li>
             </ul>
             <p className="about-paragraph">
-              The platform uses two models, Linear Regression and Random Forest, to generate accurate, data-driven predictions. By focusing on transparency and usability, Atlas GDP provides a valuable resource for policymakers, researchers, educators, economists, investors, and students.
+              The platform uses three models, Linear Regression, Random Forest, and a Hybrid model, to generate accurate, data-driven predictions. By focusing on transparency and usability, Atlas GDP provides a valuable resource for policymakers, researchers, educators, economists, investors, and students.
             </p>
           </div>
         </section>
@@ -283,25 +257,6 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="site-footer">
-        <div className="footer-left">
-          <div className="footer-logo">AtlasGDP</div>
-        </div>
-        <div className="footer-right">
-          <div className="footer-labels">
-            <div className="footer-label-content">
-              <Link href="/about" className="footer-link">
-                About Us
-              </Link>
-              <Link href="/predictor" className="footer-link">
-                Predictor Tool
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </>
   );
 }
