@@ -1,7 +1,7 @@
 // app/predictor/GDPChart.tsx
 "use client";
 
-import React, { forwardRef } from "react";
+import React from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -24,7 +24,7 @@ interface GDPChartProps {
   indicatorCodeMap: Record<string, string>;
 }
 
-const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
+const GDPChart = React.memo(({
   combinedChartData,
   loading,
   selectedCountry,
@@ -34,16 +34,13 @@ const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
   selectedModels,
   compositionCodeMap,
   indicatorCodeMap,
-}, ref) => {
+}: GDPChartProps) => {
   return (
     <div
-      ref={ref}
       style={{ 
         width: "100%",
         maxWidth: "1400px",
-        margin: "2rem auto",
-        backgroundColor: "white",
-        padding: "20px"
+        margin: "2rem auto"
       }}
     >
       <h3 style={{ 
@@ -155,6 +152,7 @@ const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
                 strokeWidth={3}
                 dot={{ r: 4, fill: '#2E5A7F', strokeWidth: 0 }}
                 activeDot={{ r: 6 }}
+                connectNulls={true}
               />
               {selectedModels.map((modelName) => {
                 const modelKey = modelName.replace(' ', '_').toLowerCase();
@@ -181,6 +179,7 @@ const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
                     strokeDasharray="5 5"
                     dot={{ r: 3, fill: color, strokeWidth: 0 }}
                     activeDot={{ r: 5 }}
+                    connectNulls={true}
                   />
                 );
               })}
@@ -210,6 +209,7 @@ const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
                     strokeWidth={2}
                     dot={{ r: 3 }}
                     activeDot={{ r: 5 }}
+                    connectNulls={true}
                   />
                 ));
               })()}
@@ -219,7 +219,7 @@ const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
                 const color = colors[index % colors.length];
                 return (
                   <Line
-                    key={code}
+                    key={`${code}-${index}`}
                     yAxisId="right"
                     type="monotone"
                     dataKey={code}
@@ -228,6 +228,7 @@ const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
                     strokeWidth={2}
                     dot={{ r: 3 }}
                     activeDot={{ r: 5 }}
+                    connectNulls={true}
                   />
                 );
               })}
@@ -236,16 +237,12 @@ const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
           
           {/* Inline Legend */}
           <div style={{ 
-            width: '100%',
-            textAlign: 'center',
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            gap: '20px', 
+            justifyContent: 'center',
             marginTop: '15px'
           }}>
-            <div style={{ 
-              display: 'inline-flex', 
-              flexWrap: 'wrap', 
-              gap: '20px', 
-              justifyContent: 'center'
-            }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div style={{ 
                 width: '30px', 
@@ -326,7 +323,6 @@ const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
                 </div>
               );
             })}
-            </div>
           </div>
         </>
       )}

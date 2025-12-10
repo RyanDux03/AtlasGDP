@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useRef, useCallback } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { indicators as indicatorsData } from "@/data/indicators";
 import type { Indicator } from "@/data/indicators";
@@ -44,9 +44,6 @@ export default function PredictorPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Chart ref for export
-  const chartRef = useRef<HTMLDivElement>(null);
-
   // Dropdown states
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [selectedGdpType, setSelectedGdpType] = useState<string | null>(null);
@@ -58,12 +55,10 @@ export default function PredictorPage() {
   
   // Map display names to indicator codes
   const indicatorCodeMap = useMemo<Record<string, string>>(() => ({
-    "Political Stability": "political_stability",
-    "Energy Use": "energy_use",
-    "Birth Rate": "birth_rate",
-    "Literacy Rate": "literacy_rate",
-    "Population": "population",
-    "Foreign Direct Investment (FDI)": "fdi"
+    "Political Instability": "political_stability",
+    "Energy Consumption": "energy_use",
+    "Tourist Arrivals": "tourism_arrivals",
+    "Tourist Departures": "tourism_departures"
   }), []);
   
   // Map composition display names to indicator codes
@@ -188,6 +183,14 @@ export default function PredictorPage() {
     const selectedCodes = selectedIndicators.map(name => indicatorCodeMap[name]);
     const selectedIndicatorObjs = indicatorsData.filter(ind => selectedCodes.includes(ind.code));
 
+    // Debug: Log what we're looking for
+    if (selectedIndicators.length > 0) {
+      console.log('Selected indicators:', selectedIndicators);
+      console.log('Selected codes:', selectedCodes);
+      console.log('Selected indicator objects:', selectedIndicatorObjs);
+      console.log('Time series data sample:', timeSeries.slice(0, 5));
+    }
+
     // Pre-create a Set of all relevant indicator IDs for faster lookup
     const relevantIndicatorIds = new Set([
       primaryGdpIndicatorId,
@@ -226,6 +229,24 @@ export default function PredictorPage() {
       }
     }
 
+    // Normalize indicators relative to GDP
+    Object.keys(yearMap).forEach(yearKey => {
+      const year = parseInt(yearKey);
+      const gdpValue = yearMap[year][primaryGdpCode];
+      
+      if (gdpValue && gdpValue > 0) {
+        selectedIndicatorObjs.forEach(ind => {
+          const rawValue = yearMap[year][ind.code];
+          if (rawValue != null) {
+            // Normalize to percentage of GDP (multiply by 100 for readability)
+            // For population, energy, etc., show as proportion × 10^6 for better scale
+            const normalizedValue = (rawValue / gdpValue) * 1000000; // Shows as "per million GDP"
+            yearMap[year][`${ind.code}_normalized`] = normalizedValue;
+          }
+        });
+      }
+    });
+
     // Add prediction data for GDP from selected models
     // Model indicator IDs: 101=LR, 102=RF, 103=Hybrid
     const modelIndicatorMap: Record<string, number> = {
@@ -233,6 +254,14 @@ export default function PredictorPage() {
       'Random Forest': 102,
       'Hybrid Model': 103
     };
+
+    // Find the last historical year to connect predictions
+    const yearsWithGdp = Object.keys(yearMap)
+      .map(y => parseInt(y))
+      .filter(y => yearMap[y][primaryGdpCode] != null)
+      .sort((a, b) => a - b);
+    const lastHistoricalYear = yearsWithGdp[yearsWithGdp.length - 1];
+    const lastHistoricalValue = lastHistoricalYear ? yearMap[lastHistoricalYear]?.[primaryGdpCode] : null;
 
     for (const pred of predictions) {
       // Check if this prediction is from a selected model
@@ -256,6 +285,19 @@ export default function PredictorPage() {
           yearMap[pred.year][`${primaryGdpCode}_pred_${modelKey}`] = pred.predicted_value;
         }
       }
+    }
+
+    // Connect prediction lines to last historical point
+    if (selectedModels.length > 0 && lastHistoricalYear && lastHistoricalValue != null) {
+      if (!yearMap[lastHistoricalYear]) {
+        yearMap[lastHistoricalYear] = { year: lastHistoricalYear } as Record<string, number>;
+      }
+      
+      selectedModels.forEach(modelName => {
+        const modelKey = modelName.replace(' ', '_').toLowerCase();
+        // Add the last historical GDP value as the starting point for each prediction line
+        yearMap[lastHistoricalYear][`${primaryGdpCode}_pred_${modelKey}`] = lastHistoricalValue;
+      });
     }
 
     let result = Object.values(yearMap).sort((a, b) => a.year - b.year);
@@ -359,29 +401,8 @@ export default function PredictorPage() {
               setSelectedCountryId(usaCountry.id);
             }
           }}
-          onExportGraph={async () => {
-            if (!chartRef.current) return;
-            try {
-              const html2canvas = (await import("html2canvas")).default;
-              const canvas = await html2canvas(chartRef.current, {
-                backgroundColor: "#ffffff",
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                windowWidth: chartRef.current.scrollWidth,
-                windowHeight: chartRef.current.scrollHeight,
-                width: chartRef.current.scrollWidth,
-                height: chartRef.current.scrollHeight,
-                scrollX: 0,
-                scrollY: 0,
-              });
-              const link = document.createElement("a");
-              link.download = `${selectedCountry}_gdp_chart.png`;
-              link.href = canvas.toDataURL("image/png");
-              link.click();
-            } catch (error) {
-              console.error("Error exporting chart:", error);
-            }
+          onExportGraph={() => {
+            console.log("Export graph functionality to be implemented");
           }}
         />
 
@@ -402,7 +423,6 @@ export default function PredictorPage() {
 
               {/* Combined GDP and Indicators Chart */}
               <GDPChart
-                ref={chartRef}
                 combinedChartData={combinedChartData}
                 selectedCountry={selectedCountry}
                 selectedGdpType={selectedGdpType}

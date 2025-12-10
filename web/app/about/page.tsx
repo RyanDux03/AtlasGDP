@@ -4,6 +4,55 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import TeamMemberCard from "./components/TeamMemberCard";
+
+const teamMembers = [
+  // First row - 2 cards
+  {
+    name: "Professor Muhammad Ikram",
+    role: "Faculty Advisor",
+    description: "Provides guidance, feedback, and technical oversight throughout the project lifecycle.",
+    image: "/team/ikram.JPEG"
+  },
+  {
+    name: "Yousuf Stanikzay",
+    role: "Team Lead & Database Developer",
+    description: "Coordinates team progress, oversees communication, responsible for API scraping and data cleaning.",
+    image: "/team/yousuf.JPEG"
+  },
+  // Second row - 3 cards
+  {
+    name: "Maunika Achanta",
+    role: "ML Engineer & Backend Developer",
+    description: "Leads model research, development, training, and accuracy evaluation.",
+    image: "/team/maunika.JPEG"
+  },
+  {
+    name: "Ryan Duxstad",
+    role: "ML Engineer & Backend Developer",
+    description: "Works on model development, predictive analysis, and backend functionality.",
+    image: "/team/ryan.png"
+  },
+  {
+    name: "Gabriela Huerta",
+    role: "ML Engineer, Backend Dev & Scribe",
+    description: "Contributes to data processing, ML training, accuracy validation, and team documentation.",
+    image: "/team/gabby.JPEG"
+  },
+  // Third row - 2 cards
+  {
+    name: "Marilyn Mathews",
+    role: "UX/UI Developer",
+    description: "Creates the interface design, develops user-friendly visuals, and integrates front-end components.",
+    image: "/team/marilyn.JPEG"
+  },
+  {
+    name: "Annie Nguyen",
+    role: "UX/UI & Database Developer",
+    description: "Designs UI components, implements front-end frameworks, hosts and manages database schema development and integration.",
+    image: "/team/annie.JPEG"
+  }
+];
 
 const challenges = [
   {
@@ -119,39 +168,56 @@ export default function AboutPage() {
 
             <h3 className="about-section-title">Team Members</h3>
             
-            <div className="team-member">
-              <strong>Yousuf Stanikzay</strong> – Team Lead & Database Developer
-              <p>Coordinates team progress, oversees communication, and manages database design and backend data interactions.</p>
-            </div>
+            <div style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "2rem",
+              marginTop: "2rem",
+              marginBottom: "3rem"
+            }}>
+              {/* First row - 2 cards */}
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, 1fr)",
+                gap: "2rem",
+                justifyContent: "center",
+                maxWidth: "800px",
+                margin: "0 auto",
+                width: "100%"
+              }}>
+                {teamMembers.slice(0, 2).map((member) => (
+                  <TeamMemberCard key={member.name} member={member} />
+                ))}
+              </div>
 
-            <div className="team-member">
-              <strong>Maunika Achanta</strong> – Machine Learning Engineer & Backend Developer
-              <p>Leads model research, development, training, and accuracy evaluation.</p>
-            </div>
+              {/* Second row - 3 cards */}
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: "2rem",
+                maxWidth: "1200px",
+                margin: "0 auto",
+                width: "100%"
+              }}>
+                {teamMembers.slice(2, 5).map((member) => (
+                  <TeamMemberCard key={member.name} member={member} />
+                ))}
+              </div>
 
-            <div className="team-member">
-              <strong>Ryan Duxstad</strong> – Machine Learning Engineer & Backend Developer
-              <p>Works on model development, predictive analysis, and backend functionality.</p>
-            </div>
-
-            <div className="team-member">
-              <strong>Gabriela Huerta</strong> – Machine Learning Engineer, Backend Developer & Scribe
-              <p>Contributes to data processing, ML training, accuracy validation, and team documentation.</p>
-            </div>
-
-            <div className="team-member">
-              <strong>Marilyn Mathews</strong> – UX/UI Developer
-              <p>Creates the interface design, develops user-friendly visuals, and integrates front-end components.</p>
-            </div>
-
-            <div className="team-member">
-              <strong>Annie Nguyen</strong> – UX/UI Developer & Database Developer
-              <p>Designs UI components, implements front-end frameworks, and assists with database schema development and integration.</p>
-            </div>
-
-            <div className="team-member">
-              <strong>Professor Muhammad Ikram</strong> – Faculty Advisor
-              <p>Provides guidance, feedback, and technical oversight throughout the project lifecycle.</p>
+              {/* Third row - 2 cards */}
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, 1fr)",
+                gap: "2rem",
+                justifyContent: "center",
+                maxWidth: "800px",
+                margin: "0 auto",
+                width: "100%"
+              }}>
+                {teamMembers.slice(5, 7).map((member) => (
+                  <TeamMemberCard key={member.name} member={member} />
+                ))}
+              </div>
             </div>
 
             <h3 className="about-section-title">About the Project</h3>
