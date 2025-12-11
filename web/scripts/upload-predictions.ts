@@ -22,6 +22,7 @@ const countryMapping: { [key: string]: string } = {
   'DEU': 'Germany',
   'IND': 'India',
   'ARE': 'United Arab Emirates',
+  'UAE': 'United Arab Emirates',
   'USA': 'USA'
 };
 
