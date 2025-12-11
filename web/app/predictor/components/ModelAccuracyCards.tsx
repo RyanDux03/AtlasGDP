@@ -18,7 +18,7 @@ const countryToIso: Record<string, string> = {
 // R² accuracies by model and country ISO code
 // Linear Regression R² values (absolute values from test results)
 const lrAccuracies: Record<string, number> = {
-  "IND": 1.85,      // Original: -1.85 (Lasso)
+  "IND": 0,      // Original: -1.85 (Lasso)
   "DEU": 0.15,      // Original: 0.15 (Ridge)
   "ARE": 0.36,      // Original: 0.36 (Lasso)
   "CHN": 0.57,      // Original: 0.57 (Lasso)
