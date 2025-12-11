@@ -55,8 +55,12 @@ export default function PredictorPage() {
   
   // Map display names to indicator codes
   const indicatorCodeMap = useMemo<Record<string, string>>(() => ({
-    "Political Instability": "political_stability",
-    "Energy Consumption": "energy_use",
+    "Political Stability": "political_stability",
+    "Energy Use": "energy_use",
+    "Birth Rate": "birth_rate",
+    "Literacy Rate": "literacy_rate",
+    "Population": "population",
+    "Foreign Direct Investment (FDI)": "fdi",
     "Tourist Arrivals": "tourism_arrivals",
     "Tourist Departures": "tourism_departures"
   }), []);
@@ -222,30 +226,12 @@ export default function PredictorPage() {
         continue;
       }
 
-      // Add selected indicator data
+      // Add selected indicator data (keep raw values for interpretability)
       const ind = selectedIndicatorObjs.find(i => i.id === row.indicator_id);
       if (ind) {
         yearMap[row.year][ind.code] = row.value;
       }
     }
-
-    // Normalize indicators relative to GDP
-    Object.keys(yearMap).forEach(yearKey => {
-      const year = parseInt(yearKey);
-      const gdpValue = yearMap[year][primaryGdpCode];
-      
-      if (gdpValue && gdpValue > 0) {
-        selectedIndicatorObjs.forEach(ind => {
-          const rawValue = yearMap[year][ind.code];
-          if (rawValue != null) {
-            // Normalize to percentage of GDP (multiply by 100 for readability)
-            // For population, energy, etc., show as proportion × 10^6 for better scale
-            const normalizedValue = (rawValue / gdpValue) * 1000000; // Shows as "per million GDP"
-            yearMap[year][`${ind.code}_normalized`] = normalizedValue;
-          }
-        });
-      }
-    });
 
     // Add prediction data for GDP from selected models
     // Model indicator IDs: 101=LR, 102=RF, 103=Hybrid

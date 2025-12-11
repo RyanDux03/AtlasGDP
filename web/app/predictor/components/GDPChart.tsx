@@ -108,13 +108,14 @@ const GDPChart = React.memo(({
                   style={{ fontSize: '14px' }}
                   width={100}
                   label={{ 
-                    value: selectedComposition ? '% of GDP' : 'Indicators', 
+                    value: selectedComposition ? '% of GDP' : 'Indicator Values', 
                     angle: 90, 
                     position: 'insideRight',
                     style: { fontSize: '16px', fontWeight: 600, fill: '#093824' }
                   }}
                 />
               )}
+            
               <Tooltip 
                 formatter={(value: number, name: string) => {
                   if (name === 'GDP' || name === 'GDP (Predicted)' || name === 'GDP Growth Rate' || name === 'GDP Growth Rate (Predicted)') {
@@ -130,10 +131,12 @@ const GDPChart = React.memo(({
                     }
                     return [`$${(value / 1_000_000_000).toFixed(2)} Billion`, name];
                   }
+                  // Composition shows as percentage
                   if (selectedComposition) {
                     return [`${value.toFixed(2)}%`, name];
                   }
-                  return [value.toFixed(2), name];
+                  // Indicators show raw values with appropriate formatting
+                  return [value.toLocaleString(undefined, { maximumFractionDigits: 2 }), name];
                 }}
                 labelFormatter={(label) => `Year: ${label}`}
                 contentStyle={{
