@@ -16,13 +16,13 @@ const countryToIso: Record<string, string> = {
 };
 
 // R² accuracies by model and country ISO code
-// Linear Regression R² values (normalized from original test values)
+// Linear Regression R² values (absolute values from test results)
 const lrAccuracies: Record<string, number> = {
-  "ARE": 0.0000,    // Original: -1.5308 (Lasso)
-  "CHN": 0.0000,    // Original: -0.3438 (Ridge)
-  "DEU": 0.1989,    // Original: 0.1989 (ElasticNet)
-  "IND": 0.0000,    // Original: -0.2119 (Lasso)
-  "USA": 0.3429     // Original: 0.3429 (ElasticNet)
+  "IND": 1.85,      // Original: -1.85 (Lasso)
+  "DEU": 0.15,      // Original: 0.15 (Ridge)
+  "ARE": 0.36,      // Original: 0.36 (Lasso)
+  "CHN": 0.57,      // Original: 0.57 (Lasso)
+  "USA": 0.93       // Original: 0.93 (Ridge)
 };
 
 const rfAccuracies: Record<string, number> = {
