@@ -1,7 +1,7 @@
 // app/predictor/GDPChart.tsx
 "use client";
 
-import React from "react";
+import React, { forwardRef } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -24,7 +24,7 @@ interface GDPChartProps {
   indicatorCodeMap: Record<string, string>;
 }
 
-const GDPChart = React.memo(({
+const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
   combinedChartData,
   loading,
   selectedCountry,
@@ -34,13 +34,15 @@ const GDPChart = React.memo(({
   selectedModels,
   compositionCodeMap,
   indicatorCodeMap,
-}: GDPChartProps) => {
+}, ref) => {
   return (
     <div
+      ref={ref}
       style={{ 
         width: "100%",
         maxWidth: "1400px",
-        margin: "2rem auto"
+        margin: "2rem auto",
+        backgroundColor: "#fff"
       }}
     >
       <h3 style={{ 

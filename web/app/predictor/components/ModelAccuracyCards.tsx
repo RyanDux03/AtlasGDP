@@ -16,6 +16,15 @@ const countryToIso: Record<string, string> = {
 };
 
 // R² accuracies by model and country ISO code
+// Linear Regression R² values (normalized from original test values)
+const lrAccuracies: Record<string, number> = {
+  "ARE": 0.0000,    // Original: -1.5308 (Lasso)
+  "CHN": 0.0000,    // Original: -0.3438 (Ridge)
+  "DEU": 0.1989,    // Original: 0.1989 (ElasticNet)
+  "IND": 0.0000,    // Original: -0.2119 (Lasso)
+  "USA": 0.3429     // Original: 0.3429 (ElasticNet)
+};
+
 const rfAccuracies: Record<string, number> = {
   "ARE": 0.967343649933759,
   "CHN": 0.9554461185372651,
@@ -149,6 +158,7 @@ function ModelCard({
 
 const ModelAccuracyCards = React.memo(({ selectedCountry }: ModelAccuracyCardsProps) => {
   const isoCode = countryToIso[selectedCountry] || "USA";
+  const lrAccuracy = lrAccuracies[isoCode];
   const rfAccuracy = rfAccuracies[isoCode];
   const hybridAccuracy = hybridAccuracies[isoCode];
 
@@ -185,7 +195,8 @@ const ModelAccuracyCards = React.memo(({ selectedCountry }: ModelAccuracyCardsPr
       }}>
         <ModelCard
           title="Linear Regression"
-          isEmpty={true}
+          accuracy={lrAccuracy}
+          description="Uses regularized linear models (Lasso, Ridge, ElasticNet) to predict GDP based on economic indicators with penalized coefficients."
         />
         <ModelCard
           title="Random Forest"

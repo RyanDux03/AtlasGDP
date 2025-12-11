@@ -53,6 +53,9 @@ export default function PredictorPage() {
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<string | null>(null);
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   
+  // Ref for chart export
+  const chartRef = useRef<HTMLDivElement>(null);
+  
   // Map display names to indicator codes
   const indicatorCodeMap = useMemo<Record<string, string>>(() => ({
     "Political Instability": "political_stability",
@@ -401,8 +404,32 @@ export default function PredictorPage() {
               setSelectedCountryId(usaCountry.id);
             }
           }}
-          onExportGraph={() => {
-            console.log("Export graph functionality to be implemented");
+          onExportGraph={async () => {
+            if (!chartRef.current) {
+              console.error("Chart ref not found");
+              return;
+            }
+            try {
+              const html2canvas = (await import("html2canvas")).default;
+              const canvas = await html2canvas(chartRef.current, {
+                backgroundColor: "#ffffff",
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                windowWidth: chartRef.current.scrollWidth,
+                windowHeight: chartRef.current.scrollHeight,
+                width: chartRef.current.scrollWidth,
+                height: chartRef.current.scrollHeight,
+                scrollX: 0,
+                scrollY: 0,
+              });
+              const link = document.createElement("a");
+              link.download = `${selectedCountry}_GDP_Chart.png`;
+              link.href = canvas.toDataURL("image/png");
+              link.click();
+            } catch (error) {
+              console.error("Error exporting chart:", error);
+            }
           }}
         />
 
@@ -423,6 +450,7 @@ export default function PredictorPage() {
 
               {/* Combined GDP and Indicators Chart */}
               <GDPChart
+                ref={chartRef}
                 combinedChartData={combinedChartData}
                 selectedCountry={selectedCountry}
                 selectedGdpType={selectedGdpType}
