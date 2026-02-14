@@ -77,10 +77,16 @@ function WorldMap() {
       flexDirection: "column",
       alignItems: "center",
       position: "relative"
-    }}>
+    }}
+    role="region"
+    aria-label="Interactive world map showing supported countries"
+    >
       {/* Tooltip */}
       {hoveredCountry && supportedCountries[hoveredCountry] && (
-        <div style={{
+        <div 
+          role="tooltip"
+          aria-live="polite"
+          style={{
           position: "absolute",
           top: "10px",
           left: "50%",
@@ -109,29 +115,41 @@ function WorldMap() {
         dangerouslySetInnerHTML={{ __html: svgContent }}
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
+        role="img"
+        aria-label="World map with clickable country regions"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            // Keyboard users can see the legend below for country information
+          }
+        }}
       />
 
       {/* Legend */}
-      <div style={{
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "center",
-        gap: "16px",
-        marginTop: "20px",
-        padding: "12px 20px",
-        backgroundColor: "#f8fafc",
-        borderRadius: "8px",
-        border: "1px solid #e2e8f0"
-      }}>
+      <div 
+        role="region"
+        aria-label="Map legend: supported countries"
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: "16px",
+          marginTop: "20px",
+          padding: "12px 20px",
+          backgroundColor: "#f8fafc",
+          borderRadius: "8px",
+          border: "1px solid #e2e8f0"
+        }}>
         {Object.entries(supportedCountries).map(([code, { name, color }]) => (
-          <div key={code} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div key={code} style={{ display: "flex", alignItems: "center", gap: "8px" }} aria-label={`${name} is shown in color`}>
             <div style={{
               width: "16px",
               height: "16px",
               backgroundColor: color,
               borderRadius: "4px",
               border: "1px solid rgba(0,0,0,0.1)"
-            }} />
+            }} aria-hidden="true" />
             <span style={{ fontSize: "14px", color: "#374151" }}>{name}</span>
           </div>
         ))}
@@ -153,6 +171,9 @@ function IndicatorGroup({ title, codes }: { title: string; codes: string[] }) {
     }}>
       <button
         onClick={() => setIsExpanded(!isExpanded)}
+        aria-expanded={isExpanded}
+        aria-controls={`indicator-group-${title.replace(/\s+/g, '-').toLowerCase()}`}
+        aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${title} section`}
         style={{
           width: "100%",
           padding: "1rem 1.25rem",
@@ -172,22 +193,30 @@ function IndicatorGroup({ title, codes }: { title: string; codes: string[] }) {
         }}>
           {title}
         </span>
-        <span style={{
-          fontSize: "1.25rem",
-          color: "#2E5A7F",
-          transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
-          transition: "transform 0.3s ease",
-          display: "inline-block"
-        }}>
+        <span 
+          aria-hidden="true"
+          style={{
+            fontSize: "1.25rem",
+            color: "#2E5A7F",
+            transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.3s ease",
+            display: "inline-block"
+          }}
+        >
           ▼
         </span>
       </button>
       
-      <div style={{
-        maxHeight: isExpanded ? "2000px" : "0",
-        overflow: "hidden",
-        transition: "max-height 0.5s ease-in-out"
-      }}>
+      <div 
+        id={`indicator-group-${title.replace(/\s+/g, '-').toLowerCase()}`}
+        role="region"
+        aria-label={`${title} content`}
+        style={{
+          maxHeight: isExpanded ? "2000px" : "0",
+          overflow: "hidden",
+          transition: "max-height 0.5s ease-in-out"
+        }}
+      >
         <div style={{
           padding: "1.5rem",
           backgroundColor: "white",
@@ -317,15 +346,16 @@ export default function HomePage() {
           muted
           playsInline
           className="hero-globe"
+          aria-hidden="true"
         />
-          <div className="hero-overlay" />
+          <div className="hero-overlay" aria-hidden="true" />
           <div className="container hero-content">
             <h1 className="hero-title">
               visualizing the why
               <br />
               in world wealth
             </h1>
-            <Link href="/predictor" className="hero-button">
+            <Link href="/predictor" className="hero-button" aria-label="Navigate to GDP predictor tool">
               go to predictor
             </Link>
           </div>

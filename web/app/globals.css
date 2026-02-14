@@ -19,6 +19,87 @@ body.atlas-body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ===== ACCESSIBILITY ===== */
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus styles for keyboard navigation */
+*:focus {
+  outline: 2px solid #2E5A7F;
+  outline-offset: 2px;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 3px solid #2E5A7F;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Button focus styles */
+button:focus-visible,
+.predictor-dropdown:focus-visible,
+.nav-link:focus-visible,
+.hero-button:focus-visible,
+.footer-link:focus-visible {
+  outline: 3px solid #FFFAEB;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px rgba(46, 90, 127, 0.3);
+}
+
+/* Link focus styles */
+a:focus-visible {
+  outline: 3px solid #2E5A7F;
+  outline-offset: 3px;
+  text-decoration: underline;
+}
+
+/* Dropdown item focus */
+.dropdown-item:focus-visible,
+[role="option"]:focus-visible {
+  outline: 2px solid #2E5A7F;
+  outline-offset: -2px;
+  background: #e0efff;
+}
+
+/* Table focus */
+table:focus-visible {
+  outline: 2px solid #2E5A7F;
+  outline-offset: 4px;
+}
+
+/* Skip to main content link (for keyboard users) */
+.skip-to-main {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 1em;
+  background-color: #2E5A7F;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.skip-to-main:focus {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 10px;
+}
+
 /* ===== FONT VARIABLES ===== */
 
 :root {

@@ -60,14 +60,15 @@ const IndicatorsTable = React.memo(({
   }, [indicatorTableData, displayedIndicators, selectedCountry]);
 
   return (
-    <section className="section" style={{ paddingTop: "2rem", paddingBottom: "3rem" }}>
+    <section className="section" style={{ paddingTop: "2rem", paddingBottom: "3rem" }} aria-labelledby="indicators-table-title">
       <div className="container">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-          <h3 className="section-title" style={{ fontSize: "36px", color: "#2E5A7F", marginBottom: "0" }}>
+          <h3 id="indicators-table-title" className="section-title" style={{ fontSize: "36px", color: "#2E5A7F", marginBottom: "0" }}>
             Indicators per Year – {selectedCountry}
           </h3>
           <button
             onClick={handleExportCSV}
+            aria-label={`Export ${selectedCountry} indicators data as CSV`}
             style={{
               padding: "10px 20px",
               backgroundColor: "#2E5A7F",
@@ -96,7 +97,11 @@ const IndicatorsTable = React.memo(({
           if (!indicator) return null;
           
           return (
-            <div style={{
+            <div 
+              id={`tooltip-${indicator.code}`}
+              role="tooltip"
+              aria-live="polite"
+              style={{
               position: "fixed",
               top: `${tooltipPosition.top}px`,
               left: `${tooltipPosition.left}px`,
@@ -135,7 +140,7 @@ const IndicatorsTable = React.memo(({
         })()}
 
         {indicatorTableData.length === 0 ? (
-          <p style={{ marginTop: "1rem" }}>
+          <p style={{ marginTop: "1rem" }} role="alert" aria-live="polite">
             No indicator data available yet for this country.
           </p>
         ) : (
@@ -146,6 +151,9 @@ const IndicatorsTable = React.memo(({
               width: "100%",
               position: "relative",
             }}
+            role="region"
+            aria-label="Economic indicators table"
+            tabIndex={0}
           >
             <table
               style={{
@@ -153,7 +161,17 @@ const IndicatorsTable = React.memo(({
                 borderCollapse: "collapse",
                 tableLayout: "auto",
               }}
+              aria-label={`Economic indicators for ${selectedCountry} by year`}
             >
+              <caption style={{ 
+                position: "absolute", 
+                left: "-10000px", 
+                width: "1px", 
+                height: "1px", 
+                overflow: "hidden" 
+              }}>
+                Economic indicators data for {selectedCountry}, showing values across multiple years
+              </caption>
               <thead>
                 <tr
                   style={{
@@ -162,6 +180,7 @@ const IndicatorsTable = React.memo(({
                   }}
                 >
                   <th
+                    scope="col"
                     style={{
                       padding: "0.75rem 1rem",
                       fontSize: "0.9rem",
@@ -174,6 +193,8 @@ const IndicatorsTable = React.memo(({
                     return (
                       <th
                         key={ind.id}
+                        scope="col"
+                        abbr={ind.label}
                         style={{
                           padding: "0.75rem 1rem",
                           fontSize: "0.85rem",
@@ -184,6 +205,7 @@ const IndicatorsTable = React.memo(({
                           backgroundColor: hoveredIndicator === ind.code ? "#e0f2fe" : "transparent",
                           whiteSpace: "nowrap",
                         }}
+                        aria-describedby={`tooltip-${ind.code}`}
                         onMouseEnter={(e) => {
                           const rect = e.currentTarget.getBoundingClientRect();
                           setTooltipPosition({
@@ -204,11 +226,15 @@ const IndicatorsTable = React.memo(({
                         }}>
                           {ind.label}
                           {ind.unit ? ` (${ind.unit})` : ""}
-                          <span style={{ 
-                            fontSize: "0.75rem", 
-                            color: "#94a3b8",
-                            fontWeight: "normal"
-                          }}>ⓘ</span>
+                          <span 
+                            style={{ 
+                              fontSize: "0.75rem", 
+                              color: "#94a3b8",
+                              fontWeight: "normal"
+                            }}
+                            role="img"
+                            aria-label="Information"
+                          >ⓘ</span>
                         </div>
                       </th>
                     );
@@ -223,7 +249,8 @@ const IndicatorsTable = React.memo(({
                       backgroundColor: rowIndex % 2 === 0 ? "white" : "#f8fafc",
                     }}
                   >
-                    <td
+                    <th
+                      scope="row"
                       style={{
                         padding: "0.75rem 1rem",
                         fontWeight: 600,
@@ -231,7 +258,7 @@ const IndicatorsTable = React.memo(({
                       }}
                     >
                       {row.year}
-                    </td>
+                    </th>
                     {displayedIndicators.map((ind) => {
                       const value = row.values[ind.code];
                       let formattedValue = "—";

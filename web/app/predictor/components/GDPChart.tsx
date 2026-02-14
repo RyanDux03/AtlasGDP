@@ -38,6 +38,8 @@ const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
   return (
     <div
       ref={ref}
+      role="region"
+      aria-label={`GDP Chart for ${selectedCountry}`}
       style={{ 
         width: "100%",
         maxWidth: "1400px",
@@ -56,15 +58,22 @@ const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
       </h3>
       <div style={{ height: "700px" }}>
       {combinedChartData.length === 0 && !loading ? (
-        <p style={{ marginTop: "1rem", textAlign: "center" }}>
+        <p style={{ marginTop: "1rem", textAlign: "center" }} role="alert">
           No data available yet for this country.
         </p>
       ) : (
         <>
+          {/* Screen reader only description */}
+          <div className="sr-only" aria-live="polite" aria-atomic="true">
+            Chart showing {selectedGdpType || 'GDP'} data for {selectedCountry} from {combinedChartData[0]?.year} to {combinedChartData[combinedChartData.length - 1]?.year}.
+            {selectedIndicators.length > 0 && ` Including indicators: ${selectedIndicators.join(', ')}.`}
+            {selectedModels.length > 0 && ` Showing predictions from: ${selectedModels.join(', ')}.`}
+          </div>
           <ResponsiveContainer width="100%" height="85%">
             <LineChart 
               data={combinedChartData}
               margin={{ top: 20, right: 50, left: 50, bottom: 60 }}
+              aria-label={`Line chart showing ${selectedGdpType || 'GDP'} trends for ${selectedCountry}`}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis 
@@ -241,20 +250,23 @@ const GDPChart = forwardRef<HTMLDivElement, GDPChartProps>(({
           </ResponsiveContainer>
           
           {/* Inline Legend */}
-          <div style={{ 
-            display: 'flex', 
-            flexWrap: 'wrap', 
-            gap: '20px', 
-            justifyContent: 'center',
-            marginTop: '15px'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div 
+            role="region"
+            aria-label="Chart legend"
+            style={{ 
+              display: 'flex', 
+              flexWrap: 'wrap', 
+              gap: '20px', 
+              justifyContent: 'center',
+              marginTop: '15px'
+            }}
+          >            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} aria-label={`Legend item: ${selectedGdpType || 'GDP'}`}>
               <div style={{ 
                 width: '30px', 
                 height: '3px', 
                 backgroundColor: '#2E5A7F',
                 borderRadius: '2px'
-              }} />
+              }} aria-hidden="true" />
               <span style={{ fontSize: '14px', fontWeight: 500 }}>
                 {selectedGdpType || 'GDP'}
               </span>

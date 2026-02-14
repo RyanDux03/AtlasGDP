@@ -97,23 +97,31 @@ const Filters = React.memo(({
   };
 
   return (
-    <section className="predictor-filters">
+    <section className="predictor-filters" aria-label="GDP Prediction Filters">
       <div className="predictor-filters-container" ref={filtersRef}>
         {/* Countries Dropdown */}
         <div className="predictor-dropdown-wrapper">
-          <div className="predictor-dropdown" onClick={() => toggleDropdown("countries")}>
+          <button 
+            className="predictor-dropdown" 
+            onClick={() => toggleDropdown("countries")}
+            aria-expanded={openDropdown === "countries"}
+            aria-haspopup="listbox"
+            aria-label="Select country"
+          >
             <span className="dropdown-label">{selectedCountry}</span>
-            <span className="dropdown-arrow">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
+            <span className="dropdown-arrow" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
                 <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
               </svg>
             </span>
-          </div>
+          </button>
           {openDropdown === "countries" && (
-            <div className="dropdown-menu">
+            <ul className="dropdown-menu" role="listbox" aria-label="Countries">
               {countriesList.map((country) => (
-                <div
+                <li
                   key={country}
+                  role="option"
+                  aria-selected={selectedCountry === country}
                   className={`dropdown-item ${selectedCountry === country ? "selected" : ""}`}
                   onClick={() => {
                     setSelectedCountry(country);
@@ -121,152 +129,240 @@ const Filters = React.memo(({
                     onCountryChange(isoCode);
                     setOpenDropdown(null);
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedCountry(country);
+                      const isoCode = countryIsoMap[country];
+                      onCountryChange(isoCode);
+                      setOpenDropdown(null);
+                    }
+                  }}
+                  tabIndex={0}
                 >
                   {country}
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           )}
         </div>
 
         {/* Composition Dropdown */}
         <div className="predictor-dropdown-wrapper">
-          <div className="predictor-dropdown" onClick={() => toggleDropdown("composition")}>
+          <button 
+            className="predictor-dropdown" 
+            onClick={() => toggleDropdown("composition")}
+            aria-expanded={openDropdown === "composition"}
+            aria-haspopup="listbox"
+            aria-label="Select GDP composition"
+          >
             <span className="dropdown-label">{selectedComposition || "GDP Composition"}</span>
-            <span className="dropdown-arrow">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
+            <span className="dropdown-arrow" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
                 <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
               </svg>
             </span>
-          </div>
+          </button>
           {openDropdown === "composition" && (
-            <div className="dropdown-menu">
+            <ul className="dropdown-menu" role="listbox" aria-label="GDP Composition">
               {compositionList.map((comp) => (
-                <div
+                <li
                   key={comp}
+                  role="option"
+                  aria-selected={selectedComposition === comp}
                   className={`dropdown-item ${selectedComposition === comp ? "selected" : ""}`}
                   onClick={() => {
                     setSelectedComposition(comp);
                     setOpenDropdown(null);
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedComposition(comp);
+                      setOpenDropdown(null);
+                    }
+                  }}
+                  tabIndex={0}
                 >
                   {comp}
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           )}
         </div>
 
         {/* Indicators Dropdown */}
         <div className="predictor-dropdown-wrapper">
-          <div className="predictor-dropdown" onClick={() => toggleDropdown("indicators")}>
+          <button 
+            className="predictor-dropdown" 
+            onClick={() => toggleDropdown("indicators")}
+            aria-expanded={openDropdown === "indicators"}
+            aria-haspopup="listbox"
+            aria-label={`Select indicators, ${selectedIndicators.length} currently selected`}
+          >
             <span className="dropdown-label">
               {selectedIndicators.length > 0
                 ? `${selectedIndicators.length} Selected`
                 : "Indicators"}
             </span>
-            <span className="dropdown-arrow">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
+            <span className="dropdown-arrow" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
                 <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
               </svg>
             </span>
-          </div>
+          </button>
           {openDropdown === "indicators" && (
-            <div className="dropdown-menu">
+            <ul className="dropdown-menu" role="listbox" aria-label="Indicators" aria-multiselectable="true">
               {indicatorsList.map((indicator) => (
-                <div
+                <li
                   key={indicator}
+                  role="option"
+                  aria-selected={selectedIndicators.includes(indicator)}
                   className={`dropdown-item ${selectedIndicators.includes(indicator) ? "selected" : ""}`}
                   onClick={() => handleIndicatorToggle(indicator)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleIndicatorToggle(indicator);
+                    }
+                  }}
+                  tabIndex={0}
                 >
-                  <input
-                    type="checkbox"
-                    checked={selectedIndicators.includes(indicator)}
-                    onChange={() => {}}
-                    style={{ marginRight: "8px" }}
-                  />
-                  {indicator}
-                </div>
+                  <label style={{ display: "flex", alignItems: "center", cursor: "pointer", width: "100%" }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedIndicators.includes(indicator)}
+                      onChange={() => handleIndicatorToggle(indicator)}
+                      style={{ marginRight: "8px" }}
+                      aria-label={indicator}
+                      tabIndex={-1}
+                    />
+                    {indicator}
+                  </label>
+                </li>
               ))}
-            </div>
+            </ul>
           )}
         </div>
 
         {/* Time Frames Dropdown */}
         <div className="predictor-dropdown-wrapper">
-          <div className="predictor-dropdown" onClick={() => toggleDropdown("timeFrames")}>
+          <button 
+            className="predictor-dropdown" 
+            onClick={() => toggleDropdown("timeFrames")}
+            aria-expanded={openDropdown === "timeFrames"}
+            aria-haspopup="listbox"
+            aria-label="Select time frame"
+          >
             <span className="dropdown-label">{selectedTimeFrame || "Timeframe"}</span>
-            <span className="dropdown-arrow">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
+            <span className="dropdown-arrow" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
                 <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
               </svg>
             </span>
-          </div>
+          </button>
           {openDropdown === "timeFrames" && (
-            <div className="dropdown-menu">
+            <ul className="dropdown-menu" role="listbox" aria-label="Time Frames">
               {timeFrames.map((frame) => (
-                <div
+                <li
                   key={frame}
+                  role="option"
+                  aria-selected={selectedTimeFrame === frame}
                   className={`dropdown-item ${selectedTimeFrame === frame ? "selected" : ""}`}
                   onClick={() => {
                     setSelectedTimeFrame(frame);
                     setOpenDropdown(null);
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedTimeFrame(frame);
+                      setOpenDropdown(null);
+                    }
+                  }}
+                  tabIndex={0}
                 >
                   {frame}
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           )}
         </div>
 
         {/* Models Dropdown */}
         <div className="predictor-dropdown-wrapper">
-          <div className="predictor-dropdown" onClick={() => toggleDropdown("models")}>
+          <button 
+            className="predictor-dropdown" 
+            onClick={() => toggleDropdown("models")}
+            aria-expanded={openDropdown === "models"}
+            aria-haspopup="listbox"
+            aria-label={`Select prediction models, ${selectedModels.length} currently selected`}
+          >
             <span className="dropdown-label">
               {selectedModels.length > 0
                 ? `${selectedModels.length} Selected`
                 : "Prediction Model"}
             </span>
-            <span className="dropdown-arrow">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none">
+            <span className="dropdown-arrow" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
                 <path d="M7.82333 7.68242C7.05054 8.41986 5.83465 8.41986 5.06186 7.68242L0.623348 3.44691C-0.682106 2.20117 0.199625 0 2.00409 0L10.8811 0C12.6856 0 13.5673 2.20117 12.2618 3.44692L7.82333 7.68242Z" fill="#2E5A7F"/>
               </svg>
             </span>
-          </div>
+          </button>
           {openDropdown === "models" && (
-            <div className="dropdown-menu">
+            <ul className="dropdown-menu" role="listbox" aria-label="Prediction Models" aria-multiselectable="true">
               {models.map((model) => (
-                <div
+                <li
                   key={model}
+                  role="option"
+                  aria-selected={selectedModels.includes(model)}
                   className={`dropdown-item ${selectedModels.includes(model) ? "selected" : ""}`}
                   onClick={() => handleModelToggle(model)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleModelToggle(model);
+                    }
+                  }}
+                  tabIndex={0}
                 >
-                  <input
-                    type="checkbox"
-                    checked={selectedModels.includes(model)}
-                    onChange={() => {}}
-                    style={{ marginRight: "8px" }}
-                  />
-                  {model}
-                </div>
+                  <label style={{ display: "flex", alignItems: "center", cursor: "pointer", width: "100%" }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedModels.includes(model)}
+                      onChange={() => handleModelToggle(model)}
+                      style={{ marginRight: "8px" }}
+                      aria-label={model}
+                      tabIndex={-1}
+                    />
+                    {model}
+                  </label>
+                </li>
               ))}
-            </div>
+            </ul>
           )}
         </div>
 
         {/* Reset Button */}
         <div className="predictor-dropdown-wrapper">
-          <div className="predictor-dropdown reset-button" onClick={onReset}>
+          <button 
+            className="predictor-dropdown reset-button" 
+            onClick={onReset}
+            aria-label="Reset all filters to default values"
+          >
             <span className="dropdown-label">RESET</span>
-          </div>
+          </button>
         </div>
 
         {/* Export Graph Button */}
         <div className="predictor-dropdown-wrapper">
-          <div className="predictor-dropdown reset-button" onClick={onExportGraph}>
+          <button 
+            className="predictor-dropdown reset-button" 
+            onClick={onExportGraph}
+            aria-label="Export graph as image"
+          >
             <span className="dropdown-label">EXPORT GRAPH</span>
-          </div>
+          </button>
         </div>
       </div>
     </section>

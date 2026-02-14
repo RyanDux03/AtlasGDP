@@ -94,6 +94,9 @@ function ChallengeDropdown({ challenge }: { challenge: typeof challenges[0] }) {
     }}>
       <button
         onClick={() => setIsExpanded(!isExpanded)}
+        aria-expanded={isExpanded}
+        aria-controls={`challenge-${challenge.id}`}
+        aria-label={`${isExpanded ? 'Collapse' : 'Expand'} challenge: ${challenge.title}`}
         style={{
           width: "100%",
           padding: "1rem 1.25rem",
@@ -113,22 +116,30 @@ function ChallengeDropdown({ challenge }: { challenge: typeof challenges[0] }) {
         }}>
           {challenge.title}
         </span>
-        <span style={{
-          fontSize: "1.25rem",
-          color: "#2E5A7F",
-          transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
-          transition: "transform 0.3s ease",
-          display: "inline-block"
-        }}>
+        <span 
+          aria-hidden="true"
+          style={{
+            fontSize: "1.25rem",
+            color: "#2E5A7F",
+            transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.3s ease",
+            display: "inline-block"
+          }}
+        >
           ▼
         </span>
       </button>
       
-      <div style={{
-        maxHeight: isExpanded ? "500px" : "0",
-        overflow: "hidden",
-        transition: "max-height 0.5s ease-in-out"
-      }}>
+      <div 
+        id={`challenge-${challenge.id}`}
+        role="region"
+        aria-label={`${challenge.title} details`}
+        style={{
+          maxHeight: isExpanded ? "500px" : "0",
+          overflow: "hidden",
+          transition: "max-height 0.5s ease-in-out"
+        }}
+      >
         <div style={{
           padding: "1.5rem",
           backgroundColor: "white",
@@ -159,9 +170,9 @@ export default function AboutPage() {
         </section>
 
         {/* About Us Content */}
-        <section className="about-content-section">
+        <section className="about-content-section" aria-labelledby="about-us-heading">
           <div className="about-content">
-            <h2 className="about-subtitle">Meet the Team Behind Atlas GDP</h2>
+            <h2 id="about-us-heading" className="about-subtitle">Meet the Team Behind Atlas GDP</h2>
             <p className="about-paragraph">
               Atlas GDP was created by a dedicated team of Computer Science students at the University of Texas at Dallas, each bringing specialized skills to build a robust ML–driven economic insight platform.
             </p>
@@ -244,8 +255,9 @@ export default function AboutPage() {
         </section>
 
         {/* Inspiration Content */}
-        <section className="about-content-section">
+        <section className="about-content-section" aria-labelledby="inspiration-heading">
           <div className="about-content">
+            <p id="inspiration-heading" className="sr-only">Inspiration behind Atlas GDP</p>
             <p className="about-paragraph">
               The inspiration for Atlas GDP came from a desire to provide clearer, more flexible insights into global economic performance. Traditional econometric models struggled with the nonlinear patterns found in modern datasets, and accessible GDP forecasting tools were limited.
             </p>

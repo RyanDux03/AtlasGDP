@@ -26,8 +26,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${roboto.variable} ${poppins.variable}`}>
       <body className="atlas-body">
+        <a href="#main-content" className="skip-to-main">
+          Skip to main content
+        </a>
         <Header />
-        {children}
+        <main id="main-content">
+          {children}
+        </main>
         <Footer />
       </body>
     </html>
