@@ -351,9 +351,9 @@ export default function PredictorPage() {
     <>
       <main>
         {/* GDP Subsection */}
-        <section className="gdp-subsection">
+        <section className="gdp-subsection" aria-labelledby="predictor-title">
           <div className="gdp-subsection-rectangle">
-            <h1 className="gdp-predictor-title">GDP Predictor</h1>
+            <h1 id="predictor-title" className="gdp-predictor-title">GDP Predictor</h1>
           </div>
         </section>
 
@@ -419,19 +419,19 @@ export default function PredictorPage() {
           }}
         />
 
-        <section className="section" style={{ paddingTop: "1rem" }}>
+        <section className="section" style={{ paddingTop: "1rem" }} aria-labelledby="results-heading">
           <div className="container">
             <div className="predictor-results" style={{ marginTop: "0" }}>
-              <h2 className="section-title" style={{ fontSize: "50px", color: "#093824" }}>
+              <h2 id="results-heading" className="section-title" style={{ fontSize: "50px", color: "#093824" }}>
                 Results – {selectedCountry}
               </h2>
 
               {/* Status / errors */}
               {errorMsg && (
-                <p style={{ color: "red", marginTop: "0.75rem" }}>{errorMsg}</p>
+                <p role="alert" style={{ color: "red", marginTop: "0.75rem" }}>{errorMsg}</p>
               )}
               {loading && (
-                <p style={{ marginTop: "0.75rem" }}>Loading data…</p>
+                <p role="status" aria-live="polite" style={{ marginTop: "0.75rem" }}>Loading data…</p>
               )}
 
               {/* Combined GDP and Indicators Chart */}
@@ -453,14 +453,14 @@ export default function PredictorPage() {
         </section>
 
         {/* Understanding Your Graph Section */}
-        <section className="gdp-subsection" style={{ marginTop: "3rem" }}>
+        <section className="gdp-subsection" style={{ marginTop: "3rem" }} aria-labelledby="understanding-title">
           <div className="gdp-subsection-rectangle">
-            <h1 className="gdp-predictor-title">Understanding Your Graph</h1>
+            <h1 id="understanding-title" className="gdp-predictor-title">Understanding Your Graph</h1>
           </div>
         </section>
 
         {/* Model Accuracy Cards */}
-        <section className="section" style={{ paddingTop: "1rem" }}>
+        <section className="section" style={{ paddingTop: "1rem" }} aria-label="Model accuracy information">
           <div className="container">
             <ModelAccuracyCards selectedCountry={selectedCountry} />
           </div>
